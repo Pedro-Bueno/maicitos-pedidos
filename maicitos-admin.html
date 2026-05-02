@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Maicitos — Panel Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:#0a0e14;min-height:100vh;color:#f0ede8}
+/* LOGIN */
+.login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+.login-card{background:#111820;border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:40px 36px;width:100%;max-width:380px;text-align:center}
+.login-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:24px;color:#f5c842;margin-bottom:4px}
+.login-logo span{color:#3ec4c4}
+.login-sub{font-size:13px;color:#6a7d8a;margin-bottom:28px}
+.field-label{font-size:11px;font-weight:500;color:#8ca0b0;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:5px;display:block;text-align:left}
+.field-input{width:100%;background:#0d1117;border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 14px;font-size:14px;color:#f0ede8;outline:none;margin-bottom:14px;font-family:'DM Sans',sans-serif;transition:border-color 0.2s}
+.field-input:focus{border-color:#3ec4c4}
+.btn-main{width:100%;background:#f5c842;color:#0d1117;border:none;border-radius:8px;padding:12px;font-size:14px;font-weight:600;font-family:'Syne',sans-serif;cursor:pointer;transition:background 0.2s}
+.btn-main:hover{background:#f0bb30}
+.btn-main:disabled{background:#444;color:#888;cursor:not-allowed}
+.login-error{font-size:13px;color:#f87171;margin-bottom:12px;display:none}
+/* MAIN */
+.main-screen{display:none}
+.topbar{background:#111820;border-bottom:1px solid rgba(255,255,255,0.07);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:#f5c842}
+.logo span{color:#3ec4c4}
+.admin-badge{font-size:11px;background:#1a0f2e;border:1px solid #3d2080;color:#a57cf5;padding:4px 10px;border-radius:20px}
+.logout-btn{font-size:12px;color:#6a7d8a;cursor:pointer;background:none;border:none;font-family:'DM Sans',sans-serif;transition:color 0.2s}
+.logout-btn:hover{color:#f87171}
+.content{padding:24px;max-width:1100px;margin:0 auto}
+/* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-bottom:24px}
+.stat-card{background:#111820;border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:16px}
+.stat-label{font-size:11px;color:#6a7d8a;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px}
+.stat-val{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:#f0ede8}
+.stat-val.yellow{color:#f5c842}
+.stat-val.teal{color:#3ec4c4}
+.stat-val.purple{color:#a57cf5}
+.stat-val.red{color:#f87171}
+/* FILTERS */
+.filters-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;align-items:center}
+.filter-btn{background:#111820;border:1px solid rgba(255,255,255,0.1);color:#8ca0b0;border-radius:20px;padding:6px 14px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s}
+.filter-btn:hover{border-color:#3ec4c4;color:#3ec4c4}
+.filter-btn.active{background:#0f2d2a;border-color:#3ec4c4;color:#3ec4c4}
+.search-input{background:#111820;border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:7px 14px;font-size:13px;color:#f0ede8;outline:none;font-family:'DM Sans',sans-serif;width:220px;transition:border-color 0.2s;margin-left:auto}
+.search-input:focus{border-color:#3ec4c4}
+/* TABLE */
+.table-wrap{background:#111820;border:1px solid rgba(255,255,255,0.08);border-radius:12px;overflow:hidden}
+.table-header{display:grid;grid-template-columns:110px 1fr 140px 110px 120px 160px;gap:12px;padding:12px 20px;border-bottom:1px solid rgba(255,255,255,0.07);font-size:11px;color:#6a7d8a;text-transform:uppercase;letter-spacing:0.8px}
+.order-row{display:grid;grid-template-columns:110px 1fr 140px 110px 120px 160px;gap:12px;padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.05);align-items:center;transition:background 0.15s;cursor:pointer}
+.order-row:last-child{border:none}
+.order-row:hover{background:rgba(255,255,255,0.03)}
+.order-id{font-family:'Syne',sans-serif;font-size:13px;font-weight:600;color:#3ec4c4}
+.order-client{font-size:13px;color:#f0ede8}
+.order-email{font-size:11px;color:#6a7d8a;margin-top:2px}
+.order-total{font-size:13px;font-weight:500;color:#f5c842}
+.order-date{font-size:12px;color:#6a7d8a}
+.status-pill{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:500;padding:4px 10px;border-radius:20px;white-space:nowrap}
+.s-pendiente{background:#1a1200;border:1px solid #5c3d00;color:#f5c842}
+.s-confirmado{background:#0f2d2a;border:1px solid #1e5050;color:#3ec4c4}
+.s-enviado{background:#0f1d2a;border:1px solid #1e3a5f;color:#60a5fa}
+.s-entregado{background:#0a2010;border:1px solid #1a5030;color:#4ade80}
+.s-cancelado{background:#2a0a0a;border:1px solid #5f1e1e;color:#f87171}
+.empty-state{text-align:center;padding:60px 24px;color:#6a7d8a}
+.empty-icon{font-size:32px;margin-bottom:12px}
+.loading-state{text-align:center;padding:60px 24px;color:#6a7d8a}
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.show{display:flex}
+.modal{background:#111820;border:1px solid rgba(255,255,255,0.1);border-radius:16px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto}
+.modal-header{padding:20px 24px;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:#f0ede8}
+.modal-close{background:none;border:none;color:#6a7d8a;font-size:20px;cursor:pointer;line-height:1;transition:color 0.2s}
+.modal-close:hover{color:#f0ede8}
+.modal-body{padding:20px 24px}
+.detail-section{margin-bottom:20px}
+.detail-label{font-size:11px;color:#6a7d8a;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px}
+.detail-value{font-size:14px;color:#f0ede8;line-height:1.6}
+.products-list{background:#0d1117;border-radius:8px;padding:14px;font-size:13px;color:#c8d4dc;line-height:1.9;white-space:pre-line}
+.divider{height:1px;background:rgba(255,255,255,0.07);margin:20px 0}
+/* ACCIÓN CONFIRMAR */
+.action-section{background:#0d1117;border-radius:12px;padding:20px;border:1px solid rgba(255,255,255,0.08)}
+.action-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:600;color:#f0ede8;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.select-input{width:100%;background:#111820;border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 14px;font-size:13px;color:#f0ede8;outline:none;font-family:'DM Sans',sans-serif;margin-bottom:12px;appearance:none;cursor:pointer;transition:border-color 0.2s}
+.select-input:focus{border-color:#3ec4c4}
+.btn-confirm{background:#3ec4c4;color:#0d1117;border:none;border-radius:8px;padding:11px 20px;font-size:13px;font-weight:600;font-family:'Syne',sans-serif;cursor:pointer;width:100%;transition:background 0.2s}
+.btn-confirm:hover{background:#35b0b0}
+.btn-confirm:disabled{background:#333;color:#666;cursor:not-allowed}
+.btn-cancelar{background:transparent;border:1px solid rgba(248,113,113,0.3);color:#f87171;border-radius:8px;padding:9px 20px;font-size:13px;cursor:pointer;width:100%;margin-top:8px;font-family:'DM Sans',sans-serif;transition:all 0.2s}
+.btn-cancelar:hover{background:rgba(248,113,113,0.1)}
+.action-done{background:#0f2d2a;border:1px solid #1e5050;border-radius:8px;padding:14px;text-align:center;color:#3ec4c4;font-size:14px}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1e4a3a;border:1px solid #2d7a5a;color:#7af5c4;font-size:13px;padding:10px 20px;border-radius:24px;opacity:0;transition:opacity 0.3s;pointer-events:none;z-index:400;white-space:nowrap}
+.toast.show{opacity:1}
+.toast.error{background:#4a1e1e;border-color:#7a2d2d;color:#f5a4a4}
+.refresh-btn{background:#111820;border:1px solid rgba(255,255,255,0.1);color:#8ca0b0;border-radius:8px;padding:7px 14px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;display:flex;align-items:center;gap:6px}
+.refresh-btn:hover{border-color:#3ec4c4;color:#3ec4c4}
+.spin-sm{width:12px;height:12px;border:2px solid rgba(255,255,255,0.1);border-top-color:#3ec4c4;border-radius:50%;animation:spin 0.8s linear infinite;display:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:768px){
+  .table-header{display:none}
+  .order-row{grid-template-columns:1fr auto;grid-template-rows:auto auto auto;gap:6px;padding:14px 16px}
+  .order-row>*:nth-child(3){grid-column:1;grid-row:2}
+  .order-row>*:nth-child(4){display:none}
+  .order-row>*:nth-child(5){grid-column:2;grid-row:1;align-self:start}
+  .order-row>*:nth-child(6){grid-column:1/-1;grid-row:3}
+  .content{padding:16px}
+  .stats-row{grid-template-columns:1fr 1fr}
+  .search-input{width:100%;margin-left:0}
+  .filters-row{gap:6px}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-screen" id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">maicitos<span>.mx</span></div>
+    <div class="login-sub">Panel de administración</div>
+    <div class="login-error" id="login-error">Contraseña incorrecta</div>
+    <label class="field-label">Contraseña</label>
+    <input class="field-input" id="pwd-input" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/>
+    <button class="btn-main" onclick="doLogin()">Entrar →</button>
+  </div>
+</div>
+
+<!-- MAIN ADMIN -->
+<div class="main-screen" id="main-screen">
+  <div class="topbar">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div class="logo">maicitos<span>.mx</span></div>
+      <div class="admin-badge">Admin</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px">
+      <button class="refresh-btn" onclick="loadOrders()">
+        <div class="spin-sm" id="spin"></div>
+        ↻ Actualizar
+      </button>
+      <button class="logout-btn" onclick="doLogout()">Salir</button>
+    </div>
+  </div>
+
+  <div class="content">
+    <!-- STATS -->
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-label">Total pedidos</div><div class="stat-val" id="stat-total">—</div></div>
+      <div class="stat-card"><div class="stat-label">Pendientes</div><div class="stat-val yellow" id="stat-pendientes">—</div></div>
+      <div class="stat-card"><div class="stat-label">Enviados</div><div class="stat-val teal" id="stat-enviados">—</div></div>
+      <div class="stat-card"><div class="stat-label">Entregados</div><div class="stat-val purple" id="stat-entregados">—</div></div>
+      <div class="stat-card"><div class="stat-label">Ingresos est.</div><div class="stat-val yellow" id="stat-ingresos">—</div></div>
+    </div>
+
+    <!-- FILTERS -->
+    <div class="filters-row">
+      <button class="filter-btn active" onclick="setFilter('TODOS',this)">Todos</button>
+      <button class="filter-btn" onclick="setFilter('PENDIENTE',this)">⏳ Pendientes</button>
+      <button class="filter-btn" onclick="setFilter('ENVIADO',this)">🚚 Enviados</button>
+      <button class="filter-btn" onclick="setFilter('ENTREGADO',this)">✅ Entregados</button>
+      <button class="filter-btn" onclick="setFilter('CANCELADO',this)">❌ Cancelados</button>
+      <input class="search-input" id="search-input" placeholder="🔍 Buscar cliente o pedido..." oninput="renderTable()"/>
+    </div>
+
+    <!-- TABLE -->
+    <div class="table-wrap">
+      <div class="table-header">
+        <div>Pedido</div>
+        <div>Cliente</div>
+        <div>Dirección</div>
+        <div>Total</div>
+        <div>Fecha</div>
+        <div>Estatus</div>
+      </div>
+      <div id="orders-container">
+        <div class="loading-state"><div class="empty-icon">⏳</div><div>Cargando pedidos...</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DETALLE -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title">Pedido #—</div>
+      <button class="modal-close" onclick="closeModalDirect()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── CONFIG ───────────────────────────────────────────
+const ADMIN_PASSWORD  = 'maicitos2026';
+const EMAILJS_PK      = 'gD1mYrwyt4Nj6wLf1';
+const EMAILJS_SERVICE = 'service_95qsreq';
+const TPL_ENVIO       = 'template_tjrqzzr';
+const SHEETS_URL      = 'https://script.google.com/macros/s/AKfycbxXLaEahcWmI8hCHhK8GrPX3kCbqWdp-qhgLLNIBwtUlUkW0aJYnd539bqNFQzh1qCq1Q/exec';
+const SHEET_ID        = '1xVOYrDRP18DuE6mq2lp4At9H4ucuJgHxOMyN8rgasp4';
+
+emailjs.init(EMAILJS_PK);
+
+const PAQUETERIAS = {
+  'Estafeta':   'https://www.estafeta.com/herramientas/rastreo?wayBillType=1&wayBill=',
+  'FedEx':      'https://www.fedex.com/fedextrack/?trknbr=',
+  'DHL':        'https://www.dhl.com/mx-es/home/rastreo.html?tracking-id=',
+  'Mercado Libre': 'https://www.mercadolibre.com.mx/envios/tracking?shipmentId=',
+  'Manuable':   'https://app.manuable.com.mx/tracking/',
+  'Paquetex':   'https://paquetexpress.com.mx/rastreo?guia=',
+  'Envía':      'https://envia.com/tracking/',
+  'Flete':      '',
+  'Recogen en bodega': '',
+};
+
+let allOrders = [];
+let activeFilter = 'TODOS';
+
+// ── AUTH ─────────────────────────────────────────────
+function doLogin(){
+  const pwd = document.getElementById('pwd-input').value;
+  const err = document.getElementById('login-error');
+  if(pwd === ADMIN_PASSWORD){
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('main-screen').style.display = 'block';
+    err.style.display = 'none';
+    loadOrders();
+  } else {
+    err.style.display = 'block';
+    document.getElementById('pwd-input').value = '';
+  }
+}
+
+function doLogout(){
+  document.getElementById('main-screen').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('pwd-input').value = '';
+}
+
+// ── LOAD ORDERS from Google Sheets CSV ───────────────
+async function loadOrders(){
+  const spin = document.getElementById('spin');
+  spin.style.display = 'block';
+  try {
+    const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Sheet1`;
+    const res = await fetch(url);
+    const csv = await res.text();
+    allOrders = parseCSV(csv);
+    renderStats();
+    renderTable();
+    showToast('Pedidos actualizados');
+  } catch(e) {
+    showToast('Error al cargar pedidos', 'error');
+    console.error(e);
+  }
+  spin.style.display = 'none';
+}
+
+function parseCSV(csv){
+  const lines = csv.trim().split('\n');
+  if(lines.length <= 1) return [];
+  return lines.slice(1).map((line, idx) => {
+    const cols = line.match(/(".*?"|[^,]+)(?=,|$)/g) || [];
+    const clean = c => (c||'').replace(/^"|"$/g,'').replace(/""/g,'"').trim();
+    return {
+      rowIndex: idx + 2,
+      fecha:     clean(cols[0]),
+      pedido:    clean(cols[1]),
+      nombre:    clean(cols[2]),
+      email:     clean(cols[3]),
+      telefono:  clean(cols[4]),
+      direccion: clean(cols[5]),
+      productos: clean(cols[6]),
+      total:     clean(cols[7]),
+      descuento: clean(cols[8]),
+      notas:     clean(cols[9]),
+      estatus:   clean(cols[10]) || 'PENDIENTE',
+      paqueteria:clean(cols[11]) || '',
+      guia:      clean(cols[12]) || '',
+    };
+  }).reverse();
+}
+
+// ── STATS ─────────────────────────────────────────────
+function renderStats(){
+  document.getElementById('stat-total').textContent = allOrders.length;
+  document.getElementById('stat-pendientes').textContent = allOrders.filter(o=>o.estatus==='PENDIENTE').length;
+  document.getElementById('stat-enviados').textContent = allOrders.filter(o=>o.estatus==='ENVIADO').length;
+  document.getElementById('stat-entregados').textContent = allOrders.filter(o=>o.estatus==='ENTREGADO').length;
+  const total = allOrders.reduce((s,o)=>{
+    const n = parseInt((o.total||'').replace(/[^0-9]/g,''));
+    return s + (isNaN(n)?0:n);
+  }, 0);
+  document.getElementById('stat-ingresos').textContent = '$'+total.toLocaleString('es-MX');
+}
+
+// ── TABLE ─────────────────────────────────────────────
+function setFilter(f, btn){
+  activeFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTable();
+}
+
+function renderTable(){
+  const search = (document.getElementById('search-input').value||'').toLowerCase();
+  let orders = allOrders;
+  if(activeFilter !== 'TODOS') orders = orders.filter(o=>o.estatus===activeFilter);
+  if(search) orders = orders.filter(o=>
+    o.pedido.toLowerCase().includes(search) ||
+    o.nombre.toLowerCase().includes(search) ||
+    o.email.toLowerCase().includes(search)
+  );
+
+  const container = document.getElementById('orders-container');
+  if(!orders.length){
+    container.innerHTML = `<div class="empty-state"><div class="empty-icon">📭</div><div>No hay pedidos que mostrar</div></div>`;
+    return;
+  }
+
+  container.innerHTML = orders.map(o => `
+    <div class="order-row" onclick="openModal('${o.pedido}')">
+      <div class="order-id">${o.pedido}</div>
+      <div><div class="order-client">${o.nombre}</div><div class="order-email">${o.email}</div></div>
+      <div class="order-email" style="font-size:12px">${o.direccion||'—'}</div>
+      <div class="order-total">${o.total||'—'}</div>
+      <div class="order-date">${o.fecha||'—'}</div>
+      <div>${statusPill(o.estatus)}</div>
+    </div>
+  `).join('');
+}
+
+function statusPill(s){
+  const map = {
+    'PENDIENTE':  ['s-pendiente','⏳'],
+    'ENVIADO':    ['s-enviado','🚚'],
+    'ENTREGADO':  ['s-entregado','✅'],
+    'CANCELADO':  ['s-cancelado','❌'],
+  };
+  const [cls,icon] = map[s] || ['s-pendiente','⏳'];
+  return `<span class="status-pill ${cls}">${icon} ${s}</span>`;
+}
+
+// ── MODAL ─────────────────────────────────────────────
+function openModal(pedidoId){
+  const o = allOrders.find(x=>x.pedido===pedidoId);
+  if(!o) return;
+  document.getElementById('modal-title').textContent = 'Pedido ' + o.pedido;
+
+  const isPendiente = o.estatus === 'PENDIENTE';
+  const isEnviado   = o.estatus === 'ENVIADO';
+  const isDone      = o.estatus === 'ENTREGADO' || o.estatus === 'CANCELADO';
+
+  const paqOptions = Object.keys(PAQUETERIAS).map(p =>
+    `<option value="${p}" ${o.paqueteria===p?'selected':''}>${p}</option>`
+  ).join('');
+
+  document.getElementById('modal-body').innerHTML = `
+    <div class="detail-section">
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:16px">
+        ${statusPill(o.estatus)}
+        <span style="font-size:12px;color:#6a7d8a">${o.fecha}</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+        <div>
+          <div class="detail-label">Cliente</div>
+          <div class="detail-value">${o.nombre}<br><span style="color:#6a7d8a;font-size:12px">${o.email}</span><br><span style="color:#6a7d8a;font-size:12px">${o.telefono||'—'}</span></div>
+        </div>
+        <div>
+          <div class="detail-label">Dirección</div>
+          <div class="detail-value" style="font-size:13px">${o.direccion||'—'}</div>
+        </div>
+      </div>
+      <div class="detail-label">Productos</div>
+      <div class="products-list">${o.productos||'—'}</div>
+      ${o.descuento && o.descuento!=='Sin descuento'?`<div style="margin-top:8px;font-size:12px;color:#a57cf5">Descuento: ${o.descuento}</div>`:''}
+      <div style="margin-top:12px;display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:13px;color:#6a7d8a">Total</span>
+        <span style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:#f5c842">${o.total}</span>
+      </div>
+      ${o.notas?`<div style="margin-top:12px;background:#0d1117;border-radius:8px;padding:12px;font-size:13px;color:#8ca0b0">📝 ${o.notas}</div>`:''}
+      ${o.guia?`<div style="margin-top:12px;background:#0f1d2a;border:1px solid #1e3a5f;border-radius:8px;padding:12px;font-size:13px;color:#60a5fa">🚚 Guía: <strong>${o.paqueteria}</strong> — <span style="font-family:monospace">${o.guia}</span></div>`:''}
+    </div>
+
+    <div class="divider"></div>
+
+    ${isDone ? `<div class="action-done">${o.estatus==='ENTREGADO'?'✅ Pedido entregado':'❌ Pedido cancelado'}</div>` : `
+    <div class="action-section">
+      <div class="action-title">📦 Confirmar pago y envío</div>
+      <div class="detail-label">Paquetería</div>
+      <select class="select-input" id="modal-paq">${paqOptions}</select>
+      <div class="detail-label">Número de guía</div>
+      <input class="field-input" id="modal-guia" type="text" placeholder="Ej: 1234567890" value="${o.guia||''}"/>
+      <button class="btn-confirm" id="btn-confirmar" onclick="confirmarEnvio('${o.pedido}')">
+        ✅ Confirmar pago + enviar guía al cliente
+      </button>
+      <button class="btn-cancelar" onclick="cancelarPedido('${o.pedido}')">Cancelar pedido</button>
+    </div>
+    `}
+  `;
+
+  document.getElementById('modal-overlay').classList.add('show');
+}
+
+function closeModal(e){
+  if(e.target === document.getElementById('modal-overlay')) closeModalDirect();
+}
+function closeModalDirect(){
+  document.getElementById('modal-overlay').classList.remove('show');
+}
+
+// ── CONFIRMAR ENVÍO ───────────────────────────────────
+async function confirmarEnvio(pedidoId){
+  const o = allOrders.find(x=>x.pedido===pedidoId);
+  if(!o) return;
+
+  const paq  = document.getElementById('modal-paq').value;
+  const guia = document.getElementById('modal-guia').value.trim();
+
+  if(!guia && paq !== 'Recogen en bodega' && paq !== 'Flete'){
+    showToast('Ingresa el número de guía', 'error');
+    return;
+  }
+
+  const btn = document.getElementById('btn-confirmar');
+  btn.disabled = true;
+  btn.textContent = 'Enviando...';
+
+  const linkBase = PAQUETERIAS[paq] || '';
+  const linkRastreo = linkBase && guia
+    ? `🔗 Rastrea tu paquete aquí: ${linkBase}${guia}`
+    : (paq === 'Recogen en bodega' ? 'Tu pedido está listo para recoger en bodega.' : '');
+
+  // 1. Email al cliente
+  try {
+    await emailjs.send(EMAILJS_SERVICE, TPL_ENVIO, {
+      client_name:  o.nombre,
+      client_email: o.email,
+      order_id:     o.pedido,
+      paqueteria:   paq,
+      numero_guia:  guia || 'N/A',
+      link_rastreo: linkRastreo,
+      products:     o.productos,
+      total:        o.total,
+    });
+  } catch(e) {
+    showToast('Error al enviar email — verifica EmailJS', 'error');
+    btn.disabled = false;
+    btn.textContent = '✅ Confirmar pago + enviar guía al cliente';
+    return;
+  }
+
+  // 2. Actualizar Sheet
+  try {
+    await fetch(SHEETS_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        action:    'update',
+        pedido:    pedidoId,
+        estatus:   'ENVIADO',
+        paqueteria: paq,
+        guia:      guia,
+      })
+    });
+  } catch(e){ console.error('Sheet update error:', e); }
+
+  // Update local state
+  o.estatus    = 'ENVIADO';
+  o.paqueteria = paq;
+  o.guia       = guia;
+
+  renderStats();
+  renderTable();
+  closeModalDirect();
+  showToast('✅ Email enviado y pedido actualizado');
+}
+
+async function cancelarPedido(pedidoId){
+  if(!confirm('¿Seguro que quieres cancelar este pedido?')) return;
+  const o = allOrders.find(x=>x.pedido===pedidoId);
+  if(!o) return;
+
+  try {
+    await fetch(SHEETS_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ action:'update', pedido:pedidoId, estatus:'CANCELADO', paqueteria:'', guia:'' })
+    });
+  } catch(e){ console.error(e); }
+
+  o.estatus = 'CANCELADO';
+  renderStats();
+  renderTable();
+  closeModalDirect();
+  showToast('Pedido cancelado');
+}
+
+function showToast(msg, type=''){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast' + (type==='error'?' error':'');
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2800);
+}
+
+// Auto-refresh cada 2 minutos
+setInterval(loadOrders, 120000);
+</script>
+</body>
+</html>
