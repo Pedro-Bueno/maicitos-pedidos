@@ -4,44 +4,54 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
 <meta name="apple-mobile-web-app-title" content="Maicitos"/>
-<meta name="theme-color" content="#0d1117"/>
+<meta name="theme-color" content="#ffffff"/>
 <title>Maicitos — Pedidos</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <style>
 :root{
-  --bg:#0d1117;
-  --card:#111820;
-  --border:rgba(255,255,255,0.08);
-  --text:#f0ede8;
-  --muted:#6a7d8a;
+  --bg:#ffffff;
+  --bg2:#f5f5f7;
+  --card:#ffffff;
+  --border:#e5e5ea;
+  --text:#1c1c1e;
+  --muted:#8e8e93;
   --yellow:#f5c842;
-  --teal:#3ec4c4;
-  --purple:#a57cf5;
-  --red:#f87171;
-  --radius:14px;
+  --yellow-dk:#d4a800;
+  --teal:#00b4b4;
+  --teal-dk:#009090;
+  --teal-light:#e6f9f9;
+  --yellow-light:#fffbeb;
+  --red:#ff3b30;
+  --green:#34c759;
+  --radius:16px;
+  --shadow:0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-md:0 4px 16px rgba(0,0,0,0.10);
   --safe-top:env(safe-area-inset-top);
   --safe-bot:env(safe-area-inset-bottom);
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;overscroll-behavior:none}
-body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:15px;-webkit-font-smoothing:antialiased}
+html,body{height:100%;overscroll-behavior:none;background:var(--bg2)}
+body{font-family:'DM Sans',sans-serif;color:var(--text);font-size:15px;-webkit-font-smoothing:antialiased}
 
 /* HEADER */
 .header{
-  background:var(--card);
+  background:rgba(255,255,255,0.92);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
   border-bottom:1px solid var(--border);
   padding:calc(14px + var(--safe-top)) 20px 14px;
   display:flex;align-items:center;justify-content:space-between;
   position:sticky;top:0;z-index:100;
 }
-.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:19px;color:var(--yellow)}
-.logo span{color:var(--teal)}
-.user-chip{display:none;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
-.user-av{width:30px;height:30px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--bg)}
+.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;color:var(--text);letter-spacing:-0.5px}
+.logo .dot-mx{color:var(--teal)}
+.logo .corn{margin-right:6px}
+.user-chip{display:none;align-items:center;gap:8px;font-size:13px;color:var(--muted);font-weight:500}
+.user-av{width:30px;height:30px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:white}
 
 /* SCREENS */
 .screen{display:none;min-height:calc(100vh - 57px)}
@@ -50,179 +60,215 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
 /* INSTALL BANNER */
 .install-banner{
   margin:16px 16px 0;
-  background:linear-gradient(135deg,#1a0f2e,#0f1d22);
-  border:1px solid var(--teal);
+  background:var(--teal-light);
+  border:1.5px solid var(--teal);
   border-radius:var(--radius);
   padding:14px 16px;
-  display:none;
-  align-items:center;gap:12px;
+  display:none;align-items:center;gap:12px;
 }
 .install-banner.show{display:flex}
-.install-icon{font-size:28px;flex-shrink:0}
-.install-text{flex:1;font-size:13px;color:var(--muted);line-height:1.4}
-.install-text strong{color:var(--text);display:block;margin-bottom:2px}
-.install-btn{background:var(--teal);color:var(--bg);border:none;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:'DM Sans',sans-serif}
+.install-btn{background:var(--teal);color:white;border:none;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:'DM Sans',sans-serif}
 .install-close{color:var(--muted);font-size:18px;cursor:pointer;background:none;border:none;flex-shrink:0}
 
 /* FORMS */
 .form-wrap{padding:20px 16px;max-width:480px;margin:0 auto}
-.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px}
-.card-icon{font-size:32px;text-align:center;margin-bottom:12px}
-.card-title{font-family:'Syne',sans-serif;font-size:19px;font-weight:700;text-align:center;margin-bottom:4px}
-.card-sub{font-size:13px;color:var(--muted);text-align:center;margin-bottom:20px}
-.field-label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px;display:block}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:14px;box-shadow:var(--shadow)}
+.card-icon{font-size:40px;text-align:center;margin-bottom:12px}
+.card-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;text-align:center;margin-bottom:4px;color:var(--text)}
+.card-sub{font-size:14px;color:var(--muted);text-align:center;margin-bottom:22px;line-height:1.5}
+.field-label{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:6px;display:block}
 .field-input{
-  width:100%;background:#0d1117;border:1.5px solid rgba(255,255,255,0.1);
-  border-radius:10px;padding:13px 16px;font-size:16px;color:var(--text);
-  outline:none;margin-bottom:14px;font-family:'DM Sans',sans-serif;
-  transition:border-color 0.2s;-webkit-appearance:none;
+  width:100%;background:var(--bg2);border:1.5px solid var(--border);
+  border-radius:12px;padding:13px 16px;font-size:16px;color:var(--text);
+  outline:none;margin-bottom:12px;font-family:'DM Sans',sans-serif;
+  transition:border-color 0.2s,box-shadow 0.2s;-webkit-appearance:none;
 }
-.field-input:focus{border-color:var(--teal)}
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.field-input:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(0,180,180,0.12);background:white}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
 .row2 .field-input{margin-bottom:0}
-.promo-row{display:flex;gap:8px;margin-bottom:14px}
+.promo-row{display:flex;gap:8px;margin-bottom:12px}
 .promo-row .field-input{margin-bottom:0;flex:1;font-size:14px}
-.btn-promo{background:#1a0f2e;border:1.5px solid var(--purple);color:var(--purple);border-radius:10px;padding:0 16px;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;font-weight:600}
-.promo-ok{font-size:12px;color:var(--purple);margin-bottom:12px;padding:8px 14px;background:#1a0f2e;border:1px solid var(--purple);border-radius:8px;display:none}
+.btn-promo{background:var(--yellow-light);border:1.5px solid var(--yellow);color:var(--yellow-dk);border-radius:12px;padding:0 16px;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;font-weight:600}
+.promo-ok{font-size:13px;color:var(--teal-dk);margin-bottom:12px;padding:10px 14px;background:var(--teal-light);border:1.5px solid var(--teal);border-radius:10px;display:none;font-weight:500}
 .btn-main{
-  width:100%;background:var(--yellow);color:#0d1117;border:none;
-  border-radius:12px;padding:16px;font-size:16px;font-weight:700;
+  width:100%;background:var(--teal);color:white;border:none;
+  border-radius:14px;padding:16px;font-size:16px;font-weight:700;
   font-family:'Syne',sans-serif;cursor:pointer;
   transition:background 0.2s,transform 0.1s;
-  -webkit-appearance:none;
+  -webkit-appearance:none;box-shadow:0 2px 8px rgba(0,180,180,0.3);
 }
-.btn-main:active{transform:scale(0.97)}
+.btn-main:active{background:var(--teal-dk);transform:scale(0.98)}
 .btn-ghost{
-  background:transparent;border:1.5px solid rgba(255,255,255,0.15);
-  color:var(--muted);border-radius:12px;padding:14px;font-size:15px;
+  background:var(--bg2);border:1.5px solid var(--border);
+  color:var(--muted);border-radius:14px;padding:14px;font-size:15px;
   cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;
   -webkit-appearance:none;
 }
-.step-bar{display:flex;gap:6px;margin-bottom:20px}
-.step-dot{flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,0.1)}
+.btn-ghost:active{border-color:var(--teal);color:var(--teal)}
+.step-bar{display:flex;gap:6px;margin-bottom:22px}
+.step-dot{flex:1;height:4px;border-radius:2px;background:var(--border)}
 .step-dot.done{background:var(--teal)}
 .step-dot.active{background:var(--yellow)}
 
 /* CATALOG */
 .catalog-wrap{padding:16px;padding-bottom:100px;max-width:600px;margin:0 auto}
 .cat-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;gap:12px;flex-wrap:wrap}
-.cat-title{font-family:'Syne',sans-serif;font-weight:800;font-size:20px}
-.cat-sub{font-size:12px;color:var(--muted);margin-top:2px}
+.cat-title{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;color:var(--text)}
+.cat-sub{font-size:13px;color:var(--muted);margin-top:2px}
 .badges{display:flex;gap:6px;flex-wrap:wrap}
-.badge-tier{font-size:11px;background:#0f2d2a;border:1px solid #1e5050;color:var(--teal);padding:4px 10px;border-radius:20px;display:none}
-.badge-disc{font-size:11px;background:#1a0f2e;border:1px solid #3d2080;color:var(--purple);padding:4px 10px;border-radius:20px;display:none}
+.badge-tier{font-size:11px;background:var(--teal-light);border:1.5px solid var(--teal);color:var(--teal-dk);padding:4px 10px;border-radius:20px;display:none;font-weight:600}
+.badge-disc{font-size:11px;background:var(--yellow-light);border:1.5px solid var(--yellow);color:var(--yellow-dk);padding:4px 10px;border-radius:20px;display:none;font-weight:600}
 .section-label{
-  font-family:'Syne',sans-serif;font-size:11px;font-weight:700;
-  color:var(--yellow);text-transform:uppercase;letter-spacing:1.5px;
+  font-family:'Syne',sans-serif;font-size:12px;font-weight:700;
+  color:var(--teal);text-transform:uppercase;letter-spacing:1.5px;
   margin:24px 0 10px;display:flex;align-items:center;gap:8px;
 }
-.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+.section-label::after{content:'';flex:1;height:1.5px;background:var(--teal-light)}
 .products-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 @media(min-width:480px){.products-grid{grid-template-columns:repeat(3,1fr)}}
 .product-card{
   background:var(--card);border:1.5px solid var(--border);
-  border-radius:12px;padding:14px;transition:border-color 0.2s,background 0.2s;
+  border-radius:14px;padding:14px;transition:all 0.2s;
+  box-shadow:var(--shadow);
 }
-.product-card.has-qty{border-color:rgba(62,196,196,0.5);background:#0f1d22}
+.product-card.has-qty{
+  border-color:var(--teal);background:var(--teal-light);
+  box-shadow:0 2px 8px rgba(0,180,180,0.15);
+}
 .prod-name{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px;line-height:1.3}
 .prod-desc{font-size:11px;color:var(--muted);margin-bottom:12px;line-height:1.4}
-.qty-ctrl{display:flex;align-items:center;background:#0d1117;border:1.5px solid rgba(255,255,255,0.1);border-radius:10px;overflow:hidden}
+.qty-ctrl{display:flex;align-items:center;background:var(--bg2);border:1.5px solid var(--border);border-radius:10px;overflow:hidden}
+.product-card.has-qty .qty-ctrl{background:white;border-color:var(--teal)}
 .qty-btn{
   width:36px;height:36px;background:transparent;border:none;
-  color:var(--muted);font-size:18px;cursor:pointer;
+  color:var(--teal);font-size:20px;font-weight:700;cursor:pointer;
   display:flex;align-items:center;justify-content:center;
-  flex-shrink:0;transition:background 0.15s;
-  -webkit-appearance:none;
+  flex-shrink:0;transition:background 0.15s;-webkit-appearance:none;
 }
-.qty-btn:active{background:rgba(255,255,255,0.08)}
-.qty-val{flex:1;text-align:center;font-size:14px;font-weight:600;color:var(--text)}
+.qty-btn:active{background:var(--teal-light)}
+.qty-val{flex:1;text-align:center;font-size:14px;font-weight:700;color:var(--text)}
 .notes-field{
-  width:100%;background:#0d1117;border:1.5px solid rgba(255,255,255,0.1);
-  border-radius:10px;padding:13px 16px;font-size:15px;color:var(--text);
+  width:100%;background:var(--card);border:1.5px solid var(--border);
+  border-radius:12px;padding:13px 16px;font-size:15px;color:var(--text);
   outline:none;font-family:'DM Sans',sans-serif;resize:none;min-height:80px;
-  transition:border-color 0.2s;-webkit-appearance:none;
+  transition:border-color 0.2s;-webkit-appearance:none;box-shadow:var(--shadow);
 }
-.notes-field:focus{border-color:var(--teal)}
+.notes-field:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(0,180,180,0.1)}
 
 /* FOOTER CART */
 .cart-footer{
   position:fixed;bottom:0;left:0;right:0;
-  background:var(--card);border-top:1px solid var(--border);
+  background:rgba(255,255,255,0.95);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border-top:1px solid var(--border);
   padding:12px 16px calc(12px + var(--safe-bot));
   display:flex;align-items:center;justify-content:space-between;gap:12px;
-  z-index:80;
+  z-index:80;box-shadow:0 -4px 20px rgba(0,0,0,0.06);
 }
 .cart-info{display:flex;flex-direction:column}
-.cart-label{font-size:11px;color:var(--muted)}
-.cart-total{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:var(--yellow)}
+.cart-label{font-size:12px;color:var(--muted);font-weight:500}
+.cart-total{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--text)}
 .btn-order{
-  background:var(--yellow);color:#0d1117;border:none;border-radius:12px;
+  background:var(--yellow);color:var(--text);border:none;border-radius:14px;
   padding:14px 24px;font-size:15px;font-weight:700;font-family:'Syne',sans-serif;
-  cursor:pointer;white-space:nowrap;transition:background 0.2s,transform 0.1s;
-  -webkit-appearance:none;
+  cursor:pointer;white-space:nowrap;transition:all 0.2s;
+  -webkit-appearance:none;box-shadow:0 2px 8px rgba(245,200,66,0.4);
 }
-.btn-order:active{transform:scale(0.96)}
+.btn-order:active{background:var(--yellow-dk);transform:scale(0.96)}
 
 /* CONFIRM */
 .confirm-wrap{padding:16px;padding-bottom:32px;max-width:520px;margin:0 auto}
-.confirm-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
-.confirm-top{background:#0f2218;padding:20px;border-bottom:1px solid var(--border)}
-.confirm-badge{font-size:11px;color:var(--teal);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;font-family:'Syne',sans-serif}
-.confirm-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;margin-bottom:3px}
-.confirm-sub{font-size:13px;color:var(--muted)}
-.status-pill{display:inline-flex;align-items:center;gap:6px;background:#0f2d2a;border:1px solid #1e5050;color:var(--teal);font-size:12px;font-weight:500;padding:5px 12px;border-radius:20px;margin-top:12px}
-.pulse-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);animation:pulse 1.5s infinite}
+.confirm-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-md)}
+.confirm-top{
+  background:linear-gradient(135deg,var(--teal),var(--teal-dk));
+  padding:24px 20px 20px;
+}
+.confirm-badge{font-size:11px;color:rgba(255,255,255,0.8);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;font-family:'Syne',sans-serif;font-weight:700}
+.confirm-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:3px;color:white}
+.confirm-sub{font-size:13px;color:rgba(255,255,255,0.8)}
+.status-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.2);color:white;font-size:12px;font-weight:600;padding:5px 12px;border-radius:20px;margin-top:12px}
+.pulse-dot{width:6px;height:6px;border-radius:50%;background:var(--yellow);animation:pulse 1.5s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
-.confirm-body{padding:18px 20px}
-.order-line{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:13px}
+.confirm-body{padding:20px}
+.order-line{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);font-size:14px}
 .order-line:last-child{border:none}
-.line-name{color:#c8d4dc}
+.line-name{color:var(--text);font-weight:500}
 .line-qty{color:var(--muted);font-size:12px;margin-left:6px}
-.line-price{color:var(--text);font-weight:600}
-.order-total-row{margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.1);display:flex;justify-content:space-between;align-items:center}
-.total-label{font-size:13px;color:var(--muted)}
-.total-amt{font-family:'Syne',sans-serif;font-size:24px;font-weight:700;color:var(--yellow)}
-.transfer-box{background:#0d1117;border:1px solid rgba(245,200,66,0.2);border-radius:10px;padding:16px;margin-top:16px}
-.transfer-label{font-size:10px;color:var(--yellow);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
-.transfer-bank{font-size:12px;color:var(--muted);margin-bottom:3px}
-.transfer-clabe{font-size:16px;font-weight:700;color:var(--text);letter-spacing:1.5px;font-family:monospace}
-.transfer-name{font-size:12px;color:var(--muted);margin-top:3px}
-.addr-box{margin-top:14px;padding:14px;background:#0d1117;border-radius:10px;border:1px solid var(--border)}
-.addr-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
-.addr-val{font-size:13px;color:#c8d4dc;line-height:1.6}
+.line-price{color:var(--text);font-weight:700}
+.order-total-row{margin-top:14px;padding:14px;background:var(--bg2);border-radius:12px;display:flex;justify-content:space-between;align-items:center}
+.total-label{font-size:13px;color:var(--muted);font-weight:500}
+.total-amt{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--text)}
+.transfer-box{background:var(--yellow-light);border:1.5px solid var(--yellow);border-radius:14px;padding:16px;margin-top:14px}
+.transfer-label{font-size:10px;color:var(--yellow-dk);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.transfer-bank{font-size:12px;color:var(--muted);margin-bottom:3px;font-weight:500}
+.transfer-clabe{font-size:18px;font-weight:800;color:var(--text);letter-spacing:2px;font-family:monospace}
+.transfer-name{font-size:12px;color:var(--muted);margin-top:4px}
+.addr-box{margin-top:14px;padding:14px;background:var(--bg2);border-radius:12px}
+.addr-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;font-weight:600}
+.addr-val{font-size:13px;color:var(--text);line-height:1.7;font-weight:500}
 .notif-box{margin-top:14px}
-.notif-row{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:10px;font-size:13px;margin-bottom:6px}
-.notif-ok{background:#0f2d2a;border:1px solid #1e5050;color:var(--teal)}
-.notif-fail{background:#2d0f0f;border:1px solid #501e1e;color:var(--red)}
-.notif-pending{background:#1a1a2e;border:1px solid #2d2d50;color:var(--muted)}
-.wa-btn{display:block;background:#0f2d2a;border:1px solid #1e5050;color:var(--teal);padding:14px 16px;border-radius:12px;text-decoration:none;font-size:14px;font-weight:600;text-align:center;margin-top:10px}
-.btn-neworder{width:100%;background:transparent;border:1.5px solid rgba(255,255,255,0.12);color:var(--muted);border-radius:12px;padding:14px;font-size:14px;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:10px;transition:all 0.2s;-webkit-appearance:none}
-.btn-neworder:active{border-color:var(--yellow);color:var(--yellow)}
+.notif-row{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:10px;font-size:13px;margin-bottom:6px;font-weight:500}
+.notif-ok{background:#f0fdf4;border:1.5px solid var(--green);color:#15803d}
+.notif-fail{background:#fff1f0;border:1.5px solid var(--red);color:#dc2626}
+.notif-pending{background:var(--bg2);border:1.5px solid var(--border);color:var(--muted)}
+.payment-section{margin-top:16px;padding-top:16px;border-top:1.5px solid var(--border)}
+.payment-title{font-size:13px;color:var(--muted);text-align:center;margin-bottom:12px;font-weight:500}
+.btn-mp{
+  width:100%;background:#009ee3;color:white;border:none;
+  border-radius:14px;padding:16px;font-size:16px;font-weight:700;
+  font-family:'Syne',sans-serif;cursor:pointer;margin-top:4px;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  transition:all 0.2s;-webkit-appearance:none;
+  box-shadow:0 2px 8px rgba(0,158,227,0.3);
+}
+.btn-mp:active{background:#0088cc;transform:scale(0.97)}
+.btn-mp:disabled{background:#c7c7cc;box-shadow:none;cursor:not-allowed}
+.wa-btn{
+  display:block;background:var(--teal-light);border:1.5px solid var(--teal);
+  color:var(--teal-dk);padding:14px 16px;border-radius:14px;
+  text-decoration:none;font-size:14px;font-weight:600;text-align:center;margin-top:10px;
+}
+.btn-neworder{
+  width:100%;background:var(--bg2);border:1.5px solid var(--border);
+  color:var(--muted);border-radius:14px;padding:14px;font-size:14px;
+  cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:10px;
+  transition:all 0.2s;-webkit-appearance:none;font-weight:500;
+}
+.btn-neworder:active{border-color:var(--teal);color:var(--teal)}
 
 /* OVERLAY */
-.overlay{display:none;position:fixed;inset:0;background:rgba(13,17,23,0.92);z-index:300;align-items:center;justify-content:center;flex-direction:column;gap:14px}
+.overlay{display:none;position:fixed;inset:0;background:rgba(255,255,255,0.85);z-index:300;align-items:center;justify-content:center;flex-direction:column;gap:14px;backdrop-filter:blur(8px)}
 .overlay.show{display:flex}
-.spin{width:40px;height:40px;border:3px solid rgba(255,255,255,0.1);border-top-color:var(--yellow);border-radius:50%;animation:spin 0.8s linear infinite}
+.spin{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--teal);border-radius:50%;animation:spin 0.8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.overlay-text{font-size:14px;color:var(--muted)}
+.overlay-text{font-size:14px;color:var(--muted);font-weight:500}
 
 /* TOAST */
-.toast{position:fixed;bottom:calc(80px + var(--safe-bot));left:50%;transform:translateX(-50%);background:#1e4a3a;border:1px solid #2d7a5a;color:#7af5c4;font-size:13px;padding:10px 20px;border-radius:24px;opacity:0;transition:opacity 0.3s;pointer-events:none;z-index:400;white-space:nowrap;font-weight:500}
+.toast{position:fixed;bottom:calc(80px + var(--safe-bot));left:50%;transform:translateX(-50%);background:var(--text);color:white;font-size:13px;padding:10px 20px;border-radius:24px;opacity:0;transition:opacity 0.3s;pointer-events:none;z-index:400;white-space:nowrap;font-weight:500;box-shadow:var(--shadow-md)}
 .toast.show{opacity:1}
-.toast.err{background:#4a1e1e;border-color:#7a2d2d;color:#f5a4a4}
+.toast.err{background:var(--red)}
 
-/* IOS INSTALL HINT */
-.ios-hint{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--border);padding:16px 20px calc(16px + var(--safe-bot));z-index:500}
+/* iOS HINT */
+.ios-hint{display:none;position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid var(--border);padding:16px 20px calc(16px + var(--safe-bot));z-index:500;box-shadow:0 -4px 20px rgba(0,0,0,0.1)}
 .ios-hint.show{display:block}
-.ios-hint-title{font-weight:600;font-size:14px;margin-bottom:6px}
-.ios-hint-steps{font-size:13px;color:var(--muted);line-height:1.8}
-.ios-hint-close{position:absolute;top:16px;right:20px;background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer}
+.ios-hint-title{font-weight:700;font-size:15px;margin-bottom:8px;color:var(--text)}
+.ios-hint-steps{font-size:13px;color:var(--muted);line-height:1.9}
+.ios-hint-close{position:absolute;top:16px;right:20px;background:var(--bg2);border:none;color:var(--muted);font-size:14px;cursor:pointer;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600}
+
+@media(max-width:500px){
+  .login-card,.card{padding:20px 16px}
+  .catalog-wrap{padding:12px}
+  .cart-footer{flex-direction:row}
+  .products-grid{grid-template-columns:1fr 1fr}
+  .row2{flex-direction:column;display:flex}
+}
 </style>
 </head>
 <body>
 
 <div class="header">
-  <div class="logo">🌽 maicitos<span>.mx</span></div>
+  <div class="logo"><span class="corn">🌽</span>maicitos<span class="dot-mx">.mx</span></div>
   <div class="user-chip" id="user-chip">
     <div class="user-av" id="user-av">--</div>
     <span id="user-name-chip"></span>
@@ -231,10 +277,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
 
 <!-- INSTALL BANNER -->
 <div class="install-banner" id="install-banner">
-  <div class="install-icon">📲</div>
-  <div class="install-text">
-    <strong>Instala la app</strong>
-    Agrega Maicitos a tu pantalla de inicio para pedir más rápido
+  <div style="font-size:28px;flex-shrink:0">📲</div>
+  <div style="flex:1;font-size:13px;color:var(--teal-dk);line-height:1.4">
+    <strong style="color:var(--text);display:block;margin-bottom:2px">Instala la app</strong>
+    Agrega Maicitos a tu pantalla de inicio
   </div>
   <button class="install-btn" id="install-btn">Instalar</button>
   <button class="install-close" onclick="dismissInstall()">✕</button>
@@ -245,8 +291,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
   <div class="form-wrap">
     <div class="card">
       <div class="card-icon">🌽</div>
-      <div class="card-title">Portal de pedidos</div>
-      <div class="card-sub">Ingresa tus datos para hacer tu pedido</div>
+      <div class="card-title">Haz tu pedido</div>
+      <div class="card-sub">Ingresa tus datos para comenzar</div>
       <label class="field-label">Correo electrónico</label>
       <input class="field-input" id="login-email" type="email" placeholder="tu@correo.com" autocomplete="email" inputmode="email"/>
       <label class="field-label">Nombre completo</label>
@@ -271,7 +317,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
         <div class="step-dot active"></div>
         <div class="step-dot"></div>
       </div>
-      <div class="card-title" style="text-align:left;font-size:17px;margin-bottom:4px">Datos de envío</div>
+      <div class="card-title" style="text-align:left;font-size:19px;margin-bottom:4px">Datos de envío</div>
       <div class="card-sub" style="text-align:left;margin-bottom:18px">¿A dónde enviamos tu pedido?</div>
       <label class="field-label">Calle y número</label>
       <input class="field-input" id="addr-street" type="text" placeholder="Av. Principal 123" autocomplete="street-address"/>
@@ -286,7 +332,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
         </div>
       </div>
       <label class="field-label">Ciudad / Estado</label>
-      <input class="field-input" id="addr-city" type="text" placeholder="Guadalajara, Jalisco" autocomplete="address-level2"/>
+      <input class="field-input" id="addr-city" type="text" placeholder="Guadalajara, Jalisco"/>
       <label class="field-label">Teléfono</label>
       <input class="field-input" id="addr-phone" type="tel" placeholder="+52 33 1234 5678" inputmode="tel" autocomplete="tel"/>
       <div style="display:flex;gap:10px;margin-top:4px">
@@ -302,7 +348,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
   <div class="catalog-wrap">
     <div class="cat-header">
       <div>
-        <div class="cat-title">Haz tu pedido</div>
+        <div class="cat-title">Tu pedido</div>
         <div class="cat-sub">Selecciona productos y cantidades</div>
       </div>
       <div class="badges">
@@ -313,28 +359,20 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
 
     <div class="section-label">🔥 Maicitos 50gr — Cajas (100 pzs)</div>
     <div class="products-grid" id="g-maicitos"></div>
-
     <div class="section-label">📦 Maicitos 500gr — Cajas grandes</div>
     <div class="products-grid" id="g-500gr"></div>
-
     <div class="section-label">🟡 Obleas rellenas — $13/pza</div>
     <div class="products-grid" id="g-obleas-rell"></div>
-
     <div class="section-label">⭕ Obleas 60gr — $16/pza</div>
     <div class="products-grid" id="g-obleas-60"></div>
-
     <div class="section-label">🟣 Obleas 30gr — Por caja</div>
     <div class="products-grid" id="g-obleas-30"></div>
-
     <div class="section-label">🍩 Churritos — Cajas (120 pzs)</div>
     <div class="products-grid" id="g-churritos"></div>
-
     <div class="section-label">🌶 Chips — Cajas (60 pzs)</div>
     <div class="products-grid" id="g-chips"></div>
-
     <div class="section-label">🏪 Exhibidores y materiales</div>
     <div class="products-grid" id="g-exhib"></div>
-
     <div class="section-label">📝 Notas</div>
     <textarea class="notes-field" id="order-notes" placeholder="Indicaciones especiales para tu pedido..."></textarea>
   </div>
@@ -368,20 +406,27 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
           <span class="total-amt" id="conf-total">$0</span>
         </div>
         <div class="transfer-box">
-          <div class="transfer-label">Datos de transferencia</div>
-          <div class="transfer-bank">BBVA · CLABE</div>
+          <div class="transfer-label">💳 Datos de transferencia</div>
+          <div class="transfer-bank">BBVA · CLABE interbancaria</div>
           <div class="transfer-clabe">012 345 678 901 234 567</div>
           <div class="transfer-name">Maicitos MX S.A. de C.V.</div>
           <div style="margin-top:10px;font-size:12px;color:var(--muted);line-height:1.6">
-            Envía tu comprobante por WhatsApp al <strong style="color:#c8d4dc">+52 341 121 9060</strong> con tu número de pedido. Confirmación en <strong style="color:#c8d4dc">24 hrs hábiles</strong>.
+            Envía tu comprobante por WhatsApp al <strong style="color:var(--text)">+52 341 121 9060</strong> con tu número de pedido. Confirmación en <strong style="color:var(--text)">24 hrs hábiles</strong>.
           </div>
         </div>
         <div class="addr-box">
-          <div class="addr-label">Envío a</div>
+          <div class="addr-label">📍 Envío a</div>
           <div class="addr-val" id="conf-addr"></div>
         </div>
         <div class="notif-box" id="notif-box"></div>
-        <div id="wa-container"></div>
+        <div class="payment-section">
+          <div class="payment-title">¿Prefieres pagar en línea?</div>
+          <button class="btn-mp" id="btn-mp" onclick="pagarConMP()">
+            💳 Pagar con Mercado Pago
+          </button>
+          <div style="text-align:center;font-size:11px;color:var(--muted);margin:8px 0">Tarjeta · SPEI · OXXO · Mercado Pago</div>
+          <div id="wa-container"></div>
+        </div>
         <button class="btn-neworder" onclick="newOrder()">+ Hacer otro pedido</button>
       </div>
     </div>
@@ -394,7 +439,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
 </div>
 <div class="toast" id="toast"></div>
 
-<!-- iOS INSTALL HINT -->
 <div class="ios-hint" id="ios-hint">
   <button class="ios-hint-close" onclick="document.getElementById('ios-hint').classList.remove('show')">✕</button>
   <div class="ios-hint-title">📲 Instalar en iPhone</div>
@@ -484,7 +528,7 @@ const PRODS = {
   ],
 };
 
-const ALL = Object.values(PRODS).flat();
+const ALL=Object.values(PRODS).flat();
 const MT=[{min:4,p:949},{min:3,p:999},{min:2,p:1050},{min:1,p:1197}];
 const CT=[{min:30,p:780},{min:12,p:840},{min:2,p:900}];
 const CHT=[{min:30,p:1020},{min:12,p:1080},{min:2,p:1140}];
@@ -496,30 +540,24 @@ let deferredPrompt=null;
 // PWA
 window.addEventListener('beforeinstallprompt',e=>{
   e.preventDefault();deferredPrompt=e;
-  if(!localStorage.getItem('installDismissed')){
+  if(!localStorage.getItem('installDismissed'))
     document.getElementById('install-banner').classList.add('show');
-  }
 });
 document.getElementById('install-btn').onclick=async()=>{
-  if(!deferredPrompt) return;
+  if(!deferredPrompt)return;
   deferredPrompt.prompt();
   const r=await deferredPrompt.userChoice;
-  if(r.outcome==='accepted') dismissInstall();
+  if(r.outcome==='accepted')dismissInstall();
   deferredPrompt=null;
 };
 function dismissInstall(){
   document.getElementById('install-banner').classList.remove('show');
   localStorage.setItem('installDismissed','1');
 }
-
-// iOS hint
 const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent)&&!window.MSStream;
 const isStandalone=window.matchMedia('(display-mode:standalone)').matches||window.navigator.standalone;
 if(isIOS&&!isStandalone&&!localStorage.getItem('iosHintDismissed')){
-  setTimeout(()=>{
-    document.getElementById('ios-hint').classList.add('show');
-    localStorage.setItem('iosHintDismissed','1');
-  },3000);
+  setTimeout(()=>{document.getElementById('ios-hint').classList.add('show');localStorage.setItem('iosHintDismissed','1');},3000);
 }
 
 const bc=g=>PRODS[g].reduce((s,p)=>s+(state.qty[p.id]||0),0);
@@ -530,8 +568,8 @@ function unitPrice(id){
   if(id.startsWith('o30_')){const b=bc('obleas30');return(O3T.find(t=>b>=t.min)||O3T[O3T.length-1]).p;}
   return(ALL.find(x=>x.id===id)||{basePrice:0}).basePrice;
 }
-function raw(){return Object.entries(state.qty).reduce((s,[id,q])=>s+q*unitPrice(id),0);}
-function final(r){
+function rawTotal(){return Object.entries(state.qty).reduce((s,[id,q])=>s+q*unitPrice(id),0);}
+function finalTotal(r=rawTotal()){
   if(!state.discount)return r;
   return state.discount.type==='percent'?r*(1-state.discount.value/100):Math.max(0,r-state.discount.value);
 }
@@ -539,12 +577,12 @@ function final(r){
 function applyPromo(){
   const code=document.getElementById('promo-code').value.trim().toUpperCase();
   const d=VIP[code];
-  if(d){state.discount=d;const el=document.getElementById('promo-ok');el.textContent='✓ '+d.label;el.style.display='block';toast('Código aplicado 🎉');}
+  if(d){state.discount=d;const el=document.getElementById('promo-ok');el.textContent='✓ '+d.label+' aplicado';el.style.display='block';toast('Código aplicado 🎉');}
   else toast('Código no válido','err');
 }
 
 function updateCart(){
-  const r=raw();const f=final(r);
+  const r=rawTotal();const f=finalTotal(r);
   const items=Object.values(state.qty).filter(v=>v>0).length;
   document.getElementById('cart-label').textContent=items+' producto'+(items!==1?'s':'');
   document.getElementById('cart-total').textContent='$'+Math.round(f).toLocaleString('es-MX');
@@ -594,16 +632,11 @@ function goToCatalog(){
   const city=document.getElementById('addr-city').value.trim();
   if(!street||!city){toast('Completa calle y ciudad','err');return;}
   state.addr={street:document.getElementById('addr-street').value,col:document.getElementById('addr-col').value,cp:document.getElementById('addr-cp').value,city:document.getElementById('addr-city').value,phone:document.getElementById('addr-phone').value};
-  buildGrid('g-maicitos',PRODS.maicitos);
-  buildGrid('g-500gr',PRODS.mg500);
-  buildGrid('g-obleas-rell',PRODS.obleasRell);
-  buildGrid('g-obleas-60',PRODS.obleas60);
-  buildGrid('g-obleas-30',PRODS.obleas30);
-  buildGrid('g-churritos',PRODS.churritos);
-  buildGrid('g-chips',PRODS.chips);
-  buildGrid('g-exhib',PRODS.exhib);
-  updateCart();
-  goTo('s-catalog');
+  buildGrid('g-maicitos',PRODS.maicitos);buildGrid('g-500gr',PRODS.mg500);
+  buildGrid('g-obleas-rell',PRODS.obleasRell);buildGrid('g-obleas-60',PRODS.obleas60);
+  buildGrid('g-obleas-30',PRODS.obleas30);buildGrid('g-churritos',PRODS.churritos);
+  buildGrid('g-chips',PRODS.chips);buildGrid('g-exhib',PRODS.exhib);
+  updateCart();goTo('s-catalog');
 }
 
 function prodsText(){
@@ -616,7 +649,7 @@ function prodsText(){
 async function goToConfirm(){
   if(!Object.values(state.qty).some(v=>v>0)){toast('Agrega al menos un producto','err');return;}
   state.orderId='MC-'+Math.floor(Math.random()*90000+10000);
-  const r=raw();const f=final(r);
+  const r=rawTotal();const f=finalTotal(r);
   const addr=state.addr;
   const addrStr=`${state.user.name}\n${addr.street}${addr.col?', '+addr.col:''}\n${addr.city}${addr.cp?' CP '+addr.cp:''}${addr.phone?'\nTel: '+addr.phone:''}`;
   const now=new Date();
@@ -638,14 +671,13 @@ async function goToConfirm(){
     const price=unitPrice(id);
     lines+=`<div class="order-line"><div><span class="line-name">${p.name}</span><span class="line-qty">× ${qty%1===0?qty:qty.toFixed(1)} ${p.unit}</span></div><div class="line-price">$${Math.round(qty*price).toLocaleString('es-MX')}</div></div>`;
   }
-  if(state.discount){const saved=r-f;lines+=`<div class="order-line" style="color:var(--purple)"><div>Descuento ${state.discount.label}</div><div>-$${Math.round(saved).toLocaleString('es-MX')}</div></div>`;}
+  if(state.discount){const saved=r-f;lines+=`<div class="order-line" style="color:var(--teal-dk)"><div style="font-weight:600">Descuento ${state.discount.label}</div><div style="font-weight:700">-$${Math.round(saved).toLocaleString('es-MX')}</div></div>`;}
   document.getElementById('order-lines').innerHTML=lines;
 
   const waMsg=encodeURIComponent(`🌽 *NUEVO PEDIDO MAICITOS*\n*Pedido:* ${state.orderId}\n*Cliente:* ${state.user.name}\n*Email:* ${state.user.email}\n*Tel:* ${addr.phone||'—'}\n*Dirección:* ${addr.street}${addr.col?', '+addr.col:''}, ${addr.city}${addr.cp?' CP '+addr.cp:''}\n\n*PRODUCTOS:*\n${prodsT}${discLine?'\n'+discLine:''}\n\n*TOTAL: $${Math.round(f).toLocaleString('es-MX')} MXN*`+(notes?`\n\n📝 ${notes}`:''));
   document.getElementById('wa-container').innerHTML=`<a href="https://wa.me/${WA_NUMBER}?text=${waMsg}" target="_blank" class="wa-btn">📲 Enviar pedido por WhatsApp</a>`;
 
   goTo('s-confirm');
-
   document.getElementById('notif-box').innerHTML=`<div class="notif-row notif-pending">⏳ Enviando confirmación...</div>`;
   document.getElementById('overlay').classList.add('show');
 
@@ -671,8 +703,27 @@ async function goToConfirm(){
   document.getElementById('overlay').classList.remove('show');
   let nb='';
   nb+=emailOk?`<div class="notif-row notif-ok">✅ Email de confirmación enviado</div>`:`<div class="notif-row notif-fail">⚠️ No se pudo enviar email — usa WhatsApp</div>`;
-  nb+=sheetOk?`<div class="notif-row notif-ok">✅ Pedido guardado en el sistema</div>`:`<div class="notif-row notif-ok">✅ Pedido registrado</div>`;
+  nb+=`<div class="notif-row notif-ok">✅ Pedido guardado en el sistema</div>`;
   document.getElementById('notif-box').innerHTML=nb;
+}
+
+async function pagarConMP(){
+  const btn=document.getElementById('btn-mp');
+  btn.disabled=true;btn.innerHTML='⏳ Generando link de pago...';
+  const f=Math.round(finalTotal());
+  try{
+    const res=await fetch('/.netlify/functions/crear-pago',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({total:f,descripcion:`Pedido Maicitos ${state.orderId}`,pedido_id:state.orderId,email:state.user.email})
+    });
+    const data=await res.json();
+    if(data.url){window.location.href=data.url;}
+    else throw new Error('Sin URL');
+  }catch(e){
+    console.error('MP:',e);
+    btn.disabled=false;btn.innerHTML='💳 Pagar con Mercado Pago';
+    toast('Error al generar el pago — intenta de nuevo','err');
+  }
 }
 
 function newOrder(){
