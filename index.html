@@ -200,7 +200,7 @@ body{font-family:'DM Sans',sans-serif;color:var(--text);font-size:15px;-webkit-f
           <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:19px">Mis pedidos</div>
           <div style="font-size:12px;color:var(--muted);margin-top:2px" id="history-email-label"></div>
         </div>
-        <button class="btn-ghost" style="padding:8px 16px;font-size:13px" onclick="goTo('s-product')">+ Nuevo</button>
+        <button class="btn-ghost" style="padding:8px 16px;font-size:13px" onclick="startNewOrder()">+ Nuevo</button>
       </div>
       <div id="history-list"><div style="text-align:center;padding:32px;color:var(--muted)">⏳ Cargando...</div></div>
     </div>
@@ -510,6 +510,13 @@ function toast(msg,type=''){
   const t=document.getElementById('toast');
   t.textContent=msg;t.className='toast'+(type==='err'?' err':'');
   t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);
+}
+  function startNewOrder(){
+  if(state.user && state.user.email){
+    goTo('s-address');
+  } else {
+    goTo('s-login');
+  }
 }
 </script>
 </body>
