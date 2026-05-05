@@ -256,7 +256,18 @@ body{font-family:'DM Sans',sans-serif;color:var(--text);font-size:15px;-webkit-f
 .ios-hint-steps{font-size:13px;color:var(--muted);line-height:1.9}
 .ios-hint-close{position:absolute;top:16px;right:20px;background:var(--bg2);border:none;color:var(--muted);font-size:14px;cursor:pointer;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600}
 
-@media(max-width:500px){
+/* HISTORY */
+.history-card{background:var(--bg);border:1.5px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;cursor:pointer;transition:all 0.2s}
+.history-card:hover{border-color:var(--teal);background:var(--teal-light)}
+.history-card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.history-id{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--teal)}
+.history-date{font-size:12px;color:var(--muted);font-weight:500}
+.history-total{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--text);margin-bottom:4px}
+.history-prods{font-size:12px;color:var(--muted);line-height:1.5;white-space:pre-line}
+.history-guia{margin-top:8px;font-size:12px;background:var(--blue-light);border:1px solid var(--blue);color:var(--blue);padding:6px 10px;border-radius:8px;font-weight:500}
+.history-empty{text-align:center;padding:32px;color:var(--muted)}
+.history-loading{text-align:center;padding:32px;color:var(--muted);font-weight:500}
+
   .login-card,.card{padding:20px 16px}
   .catalog-wrap{padding:12px}
   .cart-footer{flex-direction:row}
@@ -271,7 +282,7 @@ body{font-family:'DM Sans',sans-serif;color:var(--text);font-size:15px;-webkit-f
   <div class="logo"><span class="corn">🌽</span>maicitos<span class="dot-mx">.mx</span></div>
   <div class="user-chip" id="user-chip">
     <div class="user-av" id="user-av">--</div>
-    <span id="user-name-chip"></span>
+    <span id="user-name-chip" onclick="goTo('s-history')" style="cursor:pointer;color:var(--teal);font-weight:600"></span>
   </div>
 </div>
 
@@ -284,6 +295,22 @@ body{font-family:'DM Sans',sans-serif;color:var(--text);font-size:15px;-webkit-f
   </div>
   <button class="install-btn" id="install-btn">Instalar</button>
   <button class="install-close" onclick="dismissInstall()">✕</button>
+</div>
+
+<!-- SCREEN 0: HISTORIAL -->
+<div class="screen" id="s-history">
+  <div class="form-wrap">
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+        <div>
+          <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:19px;color:var(--text)">Mis pedidos</div>
+          <div style="font-size:13px;color:var(--muted);margin-top:2px" id="history-email-label"></div>
+        </div>
+        <button class="btn-ghost" style="padding:8px 16px;font-size:13px" onclick="goTo('s-catalog')">+ Nuevo pedido</button>
+      </div>
+      <div id="history-list"></div>
+    </div>
+  </div>
 </div>
 
 <!-- SCREEN 1: LOGIN -->
@@ -428,6 +455,7 @@ body{font-family:'DM Sans',sans-serif;color:var(--text);font-size:15px;-webkit-f
           <div id="wa-container"></div>
         </div>
         <button class="btn-neworder" onclick="newOrder()">+ Hacer otro pedido</button>
+        <button class="btn-neworder" style="margin-top:6px;border-color:var(--teal);color:var(--teal)" onclick="goTo('s-history')">📋 Ver mis pedidos</button>
       </div>
     </div>
   </div>
@@ -624,7 +652,61 @@ function goToAddress(){
   document.getElementById('user-av').textContent=name.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
   document.getElementById('user-name-chip').textContent=name.split(' ')[0];
   document.getElementById('user-chip').style.display='flex';
+  loadHistory(email);
   goTo('s-address');
+}
+
+async function loadHistory(email){
+  try{
+    const res=await fetch('/.netlify/functions/mis-pedidos',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({email})
+    });
+    const data=await res.json();
+    const pedidos=data.pedidos||[];
+    document.getElementById('history-email-label').textContent=email;
+
+    const PAQUETERIAS_LINKS={
+      'Estafeta':'https://www.estafeta.com/herramientas/rastreo?wayBillType=1&wayBill=',
+      'FedEx':'https://www.fedex.com/fedextrack/?trknbr=',
+      'DHL':'https://www.dhl.com/mx-es/home/rastreo.html?tracking-id=',
+      'Mercado Libre':'https://www.mercadolibre.com.mx/envios/tracking?shipmentId=',
+      'Manuable':'https://app.manuable.com.mx/tracking/',
+      'Paquetex':'https://paquetexpress.com.mx/rastreo?guia=',
+      'Envía':'https://envia.com/tracking/',
+    };
+
+    const statusColors={
+      'PENDIENTE':'background:var(--yellow-light);border:1.5px solid var(--yellow);color:var(--yellow-dk)',
+      'ENVIADO':'background:var(--blue-light);border:1.5px solid var(--blue);color:var(--blue)',
+      'ENTREGADO':'background:var(--green-light);border:1.5px solid var(--green);color:#15803d',
+      'CANCELADO':'background:var(--red-light);border:1.5px solid var(--red);color:var(--red)',
+    };
+
+    if(!pedidos.length){
+      document.getElementById('history-list').innerHTML=`<div class="history-empty">📦 Aún no tienes pedidos<br><span style="font-size:12px">¡Haz tu primer pedido!</span></div>`;
+      return;
+    }
+
+    document.getElementById('history-list').innerHTML=pedidos.map(p=>{
+      const statusStyle=statusColors[p.estatus]||statusColors['PENDIENTE'];
+      const linkBase=PAQUETERIAS_LINKS[p.paqueteria]||'';
+      const guiaHtml=p.guia?`<div class="history-guia">🚚 ${p.paqueteria} · <a href="${linkBase}${p.guia}" target="_blank" style="color:var(--blue);font-weight:700">${p.guia}</a> — Rastrear paquete →</div>`:'';
+      return`<div class="history-card">
+        <div class="history-card-top">
+          <span class="history-id">${p.pedido}</span>
+          <span style="font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;${statusStyle}">${p.estatus}</span>
+        </div>
+        <div class="history-total">${p.total}</div>
+        <div class="history-date">${p.fecha}</div>
+        <div class="history-prods" style="margin-top:6px">${p.productos}</div>
+        ${guiaHtml}
+      </div>`;
+    }).join('');
+  }catch(e){
+    console.error('History error:',e);
+  }
 }
 
 function goToCatalog(){
