@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+<meta name="apple-mobile-web-app-title" content="Maicitos"/>
+<meta name="theme-color" content="#ffffff"/>
+<title>Maicitos — Business Pack</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<style>
+:root{
+  --bg:#f5f5f7;--card:#ffffff;--border:#e5e5ea;--text:#1c1c1e;--muted:#8e8e93;
+  --yellow:#f5c842;--yellow-dk:#d4a800;--yellow-light:#fffbeb;
+  --teal:#00b4b4;--teal-dk:#009090;--teal-light:#e6f9f9;
+  --red:#ff3b30;--green:#34c759;--green-light:#f0fdf4;--green-dk:#15803d;
+  --blue:#007aff;--shadow:0 1px 3px rgba(0,0,0,0.08);
+  --shadow-md:0 4px 16px rgba(0,0,0,0.10);--radius:16px;
+  --safe-top:env(safe-area-inset-top);--safe-bot:env(safe-area-inset-bottom);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{overscroll-behavior:none;background:var(--bg)}
+body{font-family:'DM Sans',sans-serif;color:var(--text);font-size:15px;-webkit-font-smoothing:antialiased}
+.header{background:rgba(255,255,255,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:calc(14px + var(--safe-top)) 20px 14px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;color:var(--text)}
+.logo span{color:var(--teal)}
+.screen{display:none;min-height:calc(100vh - 57px)}
+.screen.active{display:block}
+.form-wrap{padding:20px 16px;max-width:520px;margin:0 auto}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:22px;margin-bottom:14px;box-shadow:var(--shadow)}
+.field-label{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:6px;display:block}
+.field-input{width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;font-size:16px;color:var(--text);outline:none;margin-bottom:14px;font-family:'DM Sans',sans-serif;transition:border-color 0.2s;-webkit-appearance:none;}
+.field-input:focus{border-color:var(--teal);background:white}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.row2 .field-input{margin-bottom:0}
+.btn-main{width:100%;background:var(--teal);color:white;border:none;border-radius:14px;padding:16px;font-size:16px;font-weight:700;font-family:'Syne',sans-serif;cursor:pointer;transition:all 0.2s;box-shadow:0 2px 8px rgba(0,180,180,0.3);-webkit-appearance:none;}
+.btn-main:active{background:var(--teal-dk);transform:scale(0.98)}
+.btn-main:disabled{background:#c7c7cc;box-shadow:none;cursor:not-allowed}
+.btn-ghost{background:var(--bg);border:1.5px solid var(--border);color:var(--muted);border-radius:14px;padding:14px;font-size:15px;cursor:pointer;font-family:'DM Sans',sans-serif;-webkit-appearance:none;font-weight:500;}
+/* HERO */
+.landing-hero{background:linear-gradient(150deg,#00c8c8 0%,#007f7f 100%);padding:40px 20px 36px;text-align:center;color:white;position:relative;overflow:hidden;}
+.landing-hero::before{content:'🌽';font-size:200px;opacity:0.06;position:absolute;right:-30px;top:-30px;line-height:1;pointer-events:none;}
+.landing-tag{display:inline-block;background:rgba(255,255,255,0.2);font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;padding:5px 14px;border-radius:20px;margin-bottom:14px;}
+.landing-title{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;line-height:1.15;margin-bottom:10px}
+.landing-sub{font-size:14px;opacity:0.85;line-height:1.6;max-width:320px;margin:0 auto 22px}
+.landing-stats{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.stat-chip{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:12px;padding:8px 14px;text-align:center;}
+.stat-chip-num{font-family:'Syne',sans-serif;font-size:18px;font-weight:800}
+.stat-chip-lbl{font-size:10px;opacity:0.8;font-weight:500}
+/* YA PAGUE BANNER */
+.ya-pague-banner{background:var(--green-light);border:2px solid var(--green);border-radius:16px;padding:16px 20px;margin:16px 16px 0;max-width:520px;margin-left:auto;margin-right:auto;cursor:pointer;}
+.ya-pague-title{font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:var(--green-dk);margin-bottom:3px}
+.ya-pague-sub{font-size:13px;color:var(--green-dk);opacity:0.8}
+/* PAQUETES */
+.paquetes-wrap{padding:16px 16px 48px;max-width:520px;margin:0 auto}
+.section-title{font-family:'Syne',sans-serif;font-size:19px;font-weight:800;text-align:center;margin-bottom:4px}
+.section-sub{font-size:13px;color:var(--muted);text-align:center;margin-bottom:22px}
+.paquetes-grid{display:grid;grid-template-columns:1fr;gap:20px;margin-bottom:20px}
+@media(min-width:768px){
+  .paquetes-grid{grid-template-columns:1fr 1fr 1fr;align-items:start}
+  .paquetes-wrap{max-width:1100px}
+  .section-title{font-size:26px}
+  .pasos-grid{grid-template-columns:1fr 1fr !important}
+}
+.paquete-card{background:var(--card);border:2px solid var(--border);border-radius:20px;overflow:hidden;margin-bottom:0;box-shadow:var(--shadow);position:relative;cursor:pointer;}
+.paquete-card:active{transform:scale(0.995)}
+.paquete-card.popular{border-color:var(--teal);box-shadow:0 6px 24px rgba(0,180,180,0.18)}
+.paquete-card.premium{border-color:#1c1c1e;box-shadow:0 6px 24px rgba(0,0,0,0.12)}
+.card-badge{position:absolute;top:0;left:0;right:0;padding:7px 16px;text-align:center;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;}
+.badge-popular{background:var(--teal);color:white}
+.badge-premium{background:#1c1c1e;color:white}
+.pk-head{padding:20px 20px 0}
+.pk-head.with-badge{padding-top:40px}
+.pk-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px}
+.pk-title{font-family:'Syne',sans-serif;font-size:21px;font-weight:800;color:var(--text);margin-bottom:10px}
+.pk-precio-row{display:flex;align-items:flex-end;gap:6px;margin-bottom:16px}
+.pk-precio{font-family:'Syne',sans-serif;font-size:40px;font-weight:800;color:var(--teal);line-height:1}
+.pk-precio.dark{color:#1c1c1e}
+.pk-precio-mxn{font-size:15px;color:var(--muted);font-weight:500;margin-bottom:6px}
+.roi-banner{margin:0 20px 16px;background:linear-gradient(135deg,var(--green-light),#dcfce7);border:1.5px solid var(--green);border-radius:14px;padding:14px 16px;}
+.roi-banner.gold{background:linear-gradient(135deg,var(--yellow-light),#fef3c7);border-color:var(--yellow);}
+.roi-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.roi-label{font-size:11px;font-weight:700;color:var(--green-dk);text-transform:uppercase;letter-spacing:1px}
+.roi-label.gold{color:var(--yellow-dk)}
+.roi-pill{background:var(--green);color:white;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;}
+.roi-pill.gold{background:var(--yellow);color:var(--yellow-dk)}
+.roi-numbers{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.roi-num-box{background:white;border-radius:10px;padding:10px 12px;text-align:center;border:1px solid rgba(0,0,0,0.06)}
+.roi-num-val{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--text)}
+.roi-num-lbl{font-size:10px;color:var(--muted);font-weight:500;margin-top:1px}
+.roi-ganancia{padding:10px 14px;background:var(--green);border-radius:10px;display:flex;align-items:center;justify-content:space-between;}
+.roi-ganancia.gold{background:var(--yellow)}
+.roi-gan-lbl{font-size:12px;color:white;font-weight:600}
+.roi-gan-lbl.gold{color:var(--yellow-dk)}
+.roi-gan-val{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:white}
+.roi-gan-val.gold{color:var(--yellow-dk)}
+.pk-productos{margin:0 20px 16px}
+.pk-prod-title{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.pk-prod-row{display:flex;align-items:center;justify-content:space-between;background:var(--bg);border-radius:10px;padding:10px 12px;margin-bottom:6px;}
+.pk-prod-name{font-size:13px;font-weight:600;color:var(--text)}
+.pk-prod-pcs{font-size:12px;color:var(--muted);margin-top:1px}
+.pk-prod-prices{text-align:right;flex-shrink:0;margin-left:8px}
+.pk-prod-compra{font-size:11px;color:var(--muted)}
+.pk-prod-vende{font-size:13px;font-weight:700;color:var(--green-dk)}
+.pk-incluye{margin:0 20px 20px}
+.pk-inc-title{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.pk-inc-list{list-style:none}
+.pk-inc-list li{font-size:13px;padding:4px 0;display:flex;align-items:flex-start;gap:8px;line-height:1.4;color:var(--text)}
+.pk-inc-list li .ic{flex-shrink:0;width:18px;height:18px;background:var(--teal-light);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--teal-dk);margin-top:1px}
+.pk-inc-list li .ic.bono{background:var(--yellow-light);color:var(--yellow-dk)}
+.pk-inc-list li .ic.gold{background:var(--yellow-light);color:var(--yellow-dk)}
+.pk-inc-list li span{font-size:10px;color:var(--muted);font-weight:500;display:block}
+.pk-cta{padding:0 20px 20px}
+.btn-cta{width:100%;border:none;border-radius:14px;padding:16px;font-size:16px;font-weight:700;font-family:'Syne',sans-serif;cursor:pointer;transition:all 0.15s;-webkit-appearance:none;display:flex;align-items:center;justify-content:center;gap:8px;}
+.btn-cta:active{transform:scale(0.98)}
+.cta-teal{background:var(--teal);color:white;box-shadow:0 3px 12px rgba(0,180,180,0.35)}
+.cta-teal:active{background:var(--teal-dk)}
+.cta-dark{background:#1c1c1e;color:white;box-shadow:0 3px 12px rgba(0,0,0,0.25)}
+.cta-dark:active{background:#3a3a3c}
+.seguro-row{display:flex;align-items:center;justify-content:center;gap:5px;font-size:11px;color:var(--muted);margin-top:8px}
+/* LOGIN */
+.login-selected{background:var(--teal-light);border:2px solid var(--teal);border-radius:14px;padding:14px 16px;margin-bottom:18px;display:flex;align-items:center;gap:12px;}
+.login-sel-name{font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:var(--teal-dk)}
+.login-sel-price{font-size:14px;color:var(--teal);font-weight:600;margin-top:2px}
+/* PAGO OPTIONS */
+.pago-divider{display:flex;align-items:center;gap:10px;margin:14px 0;color:var(--muted);font-size:12px;font-weight:500}
+.pago-divider::before,.pago-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.btn-transferencia{width:100%;background:var(--yellow-light);border:2px solid var(--yellow);color:var(--yellow-dk);border-radius:14px;padding:14px;font-size:15px;font-weight:700;font-family:'Syne',sans-serif;cursor:pointer;-webkit-appearance:none;transition:all 0.2s;}
+.btn-transferencia:active{background:var(--yellow);color:white}
+.transferencia-box{background:var(--bg);border:1.5px solid var(--border);border-radius:12px;padding:16px;margin-top:14px;display:none;}
+.transferencia-box.show{display:block}
+.trans-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.trans-row:last-child{border:none}
+.trans-label{color:var(--muted);font-weight:500}
+.trans-val{font-weight:700;color:var(--text);text-align:right}
+.trans-clabe{font-family:monospace;font-size:14px;color:var(--teal-dk);font-weight:700;letter-spacing:1px}
+/* POST PAGO */
+.postpago-top{background:linear-gradient(135deg,var(--green),#22a44a);padding:32px 20px 28px;text-align:center;color:white;}
+.postpago-icon{font-size:44px;margin-bottom:8px}
+.postpago-title{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;margin-bottom:6px}
+.postpago-sub{font-size:14px;opacity:0.9;line-height:1.5}
+.academia-notice{background:var(--yellow-light);border:2px solid var(--yellow);border-radius:14px;padding:16px;margin-bottom:16px;}
+.academia-notice-title{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--yellow-dk);margin-bottom:5px}
+.academia-notice-text{font-size:13px;color:#92600a;line-height:1.6}
+/* YA PAGUE SCREEN */
+.yapague-top{background:linear-gradient(135deg,var(--teal),var(--teal-dk));padding:32px 20px 28px;text-align:center;color:white;}
+/* CONFIRM */
+.confirm-wrap{padding:16px;padding-bottom:40px;max-width:520px;margin:0 auto}
+.confirm-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-md)}
+.confirm-top{background:linear-gradient(135deg,var(--teal),var(--teal-dk));padding:24px 20px 20px}
+.confirm-badge{font-size:11px;color:rgba(255,255,255,0.8);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;font-family:'Syne',sans-serif;font-weight:700}
+.confirm-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:3px;color:white}
+.confirm-sub{font-size:13px;color:rgba(255,255,255,0.8)}
+.status-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.2);color:white;font-size:12px;font-weight:600;padding:5px 12px;border-radius:20px;margin-top:12px}
+.pulse-dot{width:6px;height:6px;border-radius:50%;background:var(--yellow);animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+.confirm-body{padding:20px}
+.summary-box{background:var(--bg);border-radius:12px;padding:16px;margin-bottom:14px}
+.summary-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:10px;font-weight:600}
+.summary-item{display:flex;justify-content:space-between;align-items:center;font-size:14px;padding:5px 0;border-bottom:1px solid var(--border);font-weight:500}
+.summary-item:last-child{border:none}
+.addr-box{margin-top:14px;padding:14px;background:var(--bg);border-radius:12px}
+.addr-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;font-weight:600}
+.addr-val{font-size:13px;color:var(--text);line-height:1.7;font-weight:500}
+.notif-box{margin-top:14px}
+.notif-row{display:flex;align-items:flex-start;gap:8px;padding:12px 14px;border-radius:10px;font-size:13px;margin-bottom:8px;font-weight:500;line-height:1.5}
+.notif-ok{background:var(--green-light);border:1.5px solid var(--green);color:var(--green-dk)}
+.notif-fail{background:#fff1f0;border:1.5px solid var(--red);color:var(--red)}
+.notif-academia{background:var(--yellow-light);border:1.5px solid var(--yellow);color:var(--yellow-dk)}
+.btn-wa{width:100%;background:#25D366;color:white;border:none;border-radius:14px;padding:15px;font-size:15px;font-weight:700;font-family:'Syne',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:all 0.2s;box-shadow:0 2px 8px rgba(37,211,102,0.3);-webkit-appearance:none;margin-top:10px;text-decoration:none;}
+.btn-wa:active{background:#1fb855;transform:scale(0.97)}
+.overlay{display:none;position:fixed;inset:0;background:rgba(255,255,255,0.85);z-index:300;align-items:center;justify-content:center;flex-direction:column;gap:14px;backdrop-filter:blur(8px)}
+.overlay.show{display:flex}
+.spin{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--teal);border-radius:50%;animation:spin 0.8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.overlay-text{font-size:14px;color:var(--muted);font-weight:500}
+.toast{position:fixed;bottom:calc(24px + var(--safe-bot));left:50%;transform:translateX(-50%);background:var(--text);color:white;font-size:13px;padding:10px 20px;border-radius:24px;opacity:0;transition:opacity 0.3s;pointer-events:none;z-index:400;white-space:nowrap;font-weight:500;box-shadow:var(--shadow-md)}
+.toast.show{opacity:1}
+.toast.err{background:var(--red)}
+@media(max-width:500px){.paquetes-wrap,.form-wrap{padding-left:12px;padding-right:12px}.landing-title{font-size:24px}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">🌽 maicitos<span>.mx</span></div>
+</div>
+
+<!-- ===== LANDING ===== -->
+<div class="screen active" id="s-landing">
+  <div class="landing-hero">
+    <div class="landing-tag">Maicitos MX</div>
+    <div class="landing-title">Empieza tu negocio<br>de botanas hoy 🌽</div>
+    <div class="landing-sub">Producto listo para vender, formación completa y comunidad que te respalda</div>
+    <div class="landing-stats">
+      <div class="stat-chip"><div class="stat-chip-num">+100%</div><div class="stat-chip-lbl">ROI potencial</div></div>
+      <div class="stat-chip"><div class="stat-chip-num">$9.50</div><div class="stat-chip-lbl">Tu costo / pza</div></div>
+      <div class="stat-chip"><div class="stat-chip-num">$20+</div><div class="stat-chip-lbl">Precio de venta</div></div>
+    </div>
+  </div>
+
+  <!-- BANNER YA PAGUE -->
+  <div style="max-width:520px;margin:16px auto 0;padding:0 16px">
+    <div class="ya-pague-banner" onclick="goTo('s-yapague')">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div>
+          <div class="ya-pague-title">✅ ¿Ya realizaste tu pago?</div>
+          <div class="ya-pague-sub">Toca aquí para continuar con tu pedido →</div>
+        </div>
+        <div style="font-size:24px">📦</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOTO DEL PAQUETE -->
+  <div style="max-width:900px;margin:20px auto 0;padding:0 16px">
+    <img src="paquete_maicitos_bussines_pack.png" alt="Maicitos Business Pack" style="width:100%;border-radius:20px;box-shadow:0 8px 32px rgba(0,0,0,0.15);display:block"/>
+  </div>
+
+  <!-- PASOS -->
+  <div style="max-width:900px;margin:20px auto 0;padding:0 16px">
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:20px;padding:28px 24px;box-shadow:var(--shadow)">
+      <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;text-align:center;margin-bottom:24px">¿Cómo funciona? 🚀</div>
+      <div style="display:grid;grid-template-columns:1fr;gap:14px" class="pasos-grid">
+
+        <div style="display:flex;align-items:flex-start;gap:14px;padding:14px;background:var(--teal-light);border:1.5px solid var(--teal);border-radius:14px">
+          <div style="min-width:36px;height:36px;background:var(--teal);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:white">1</div>
+          <div>
+            <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--teal-dk);margin-bottom:2px">Elige tu paquete</div>
+            <div style="font-size:13px;color:var(--teal-dk);opacity:0.85">Selecciona el Business Pack que mejor se adapte a tus metas</div>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:flex-start;gap:14px;padding:14px;background:#eff6ff;border:1.5px solid var(--blue);border-radius:14px">
+          <div style="min-width:36px;height:36px;background:var(--blue);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:white">2</div>
+          <div>
+            <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--blue);margin-bottom:2px">Realiza tu pago</div>
+            <div style="font-size:13px;color:#1d4ed8;opacity:0.85">Paga con Mercado Pago (tarjeta, SPEI, OXXO) o por transferencia bancaria a Santander</div>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:flex-start;gap:14px;padding:14px;background:var(--green-light);border:1.5px solid var(--green);border-radius:14px">
+          <div style="min-width:36px;height:36px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:white">3</div>
+          <div>
+            <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--green-dk);margin-bottom:2px">Llena tus datos de envío</div>
+            <div style="font-size:13px;color:var(--green-dk);opacity:0.85">Ingresa tu dirección para que enviemos tu paquete a todo México</div>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:flex-start;gap:14px;padding:14px;background:var(--yellow-light);border:1.5px solid var(--yellow);border-radius:14px">
+          <div style="min-width:36px;height:36px;background:var(--yellow);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:var(--yellow-dk)">4</div>
+          <div>
+            <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--yellow-dk);margin-bottom:2px">Comparte tu comprobante por WhatsApp</div>
+            <div style="font-size:13px;color:#92600a;opacity:0.9">Una vez validado tu pago (hasta 24 hrs hábiles), recibirás acceso a la academia y tu guía de rastreo 🎓📦</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="paquetes-wrap">
+    <!-- SOCIAL PROOF -->
+    <div style="background:linear-gradient(135deg,#1c1c1e,#2c2c2e);border-radius:16px;padding:20px;margin-bottom:24px;text-align:center;position:relative;overflow:hidden;">
+      <div style="position:absolute;top:-10px;right:-10px;font-size:90px;opacity:0.05;line-height:1;pointer-events:none">📊</div>
+      <div style="font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--yellow);margin-bottom:10px">Resultados reales de nuestra red</div>
+      <div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:white;line-height:1.25;margin-bottom:10px">El <span style="color:var(--yellow)">85%</span> de nuestros distribuidores recupera su inversión en <span style="color:var(--yellow)">menos de 30 días</span></div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px">
+        <div style="height:1px;flex:1;background:rgba(255,255,255,0.1)"></div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.4);font-weight:500">siguiendo los pasos de la academia</div>
+        <div style="height:1px;flex:1;background:rgba(255,255,255,0.1)"></div>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:center">
+        <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:8px 14px;text-align:center">
+          <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--yellow)">85%</div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.5);margin-top:1px">recuperan en 30 días</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:8px 14px;text-align:center">
+          <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--yellow)">+100%</div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.5);margin-top:1px">ROI potencial</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:8px 14px;text-align:center">
+          <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--yellow)">$0</div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.5);margin-top:1px">costo mensual</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title">Elige tu paquete</div>
+    <div class="section-sub">Envío incluido a todo México 📦</div>
+    <div class="paquetes-grid">
+    <!-- BASIC -->
+    <div class="paquete-card" onclick="elegirPaquete('basic')">
+      <div class="pk-head">
+        <div class="pk-label">Maicitos</div>
+        <div class="pk-title">Business Pack</div>
+        <div class="pk-precio-row"><div class="pk-precio">$4,997</div><div class="pk-precio-mxn">MXN · envío incluido</div></div>
+      </div>
+      <div class="roi-banner">
+        <div class="roi-top"><div class="roi-label">💰 Tu potencial de ganancia</div><div class="roi-pill">+106% ROI</div></div>
+        <div class="roi-numbers">
+          <div class="roi-num-box"><div class="roi-num-val">$4,997</div><div class="roi-num-lbl">Inviertes hoy</div></div>
+          <div class="roi-num-box"><div class="roi-num-val">$10,325</div><div class="roi-num-lbl">Vendes en total</div></div>
+        </div>
+        <div class="roi-ganancia"><div class="roi-gan-lbl">🎯 Ganancia neta estimada</div><div class="roi-gan-val">+$5,328</div></div>
+        <div style="margin-top:8px;display:flex;align-items:center;gap:6px;font-size:12px;color:var(--green-dk);font-weight:600"><span>⏱️</span><span>El 85% recupera esto en menos de 30 días</span></div>
+      </div>
+      <div class="pk-productos">
+        <div class="pk-prod-title">📦 Tu mercancía</div>
+        <div class="pk-prod-row">
+          <div><div class="pk-prod-name">🌽 Maicitos 50gr</div><div class="pk-prod-pcs">300 piezas</div></div>
+          <div class="pk-prod-prices"><div class="pk-prod-compra">Te cuesta $9.50 c/u</div><div class="pk-prod-vende">Vendes a $20-25 c/u</div></div>
+        </div>
+        <div class="pk-prod-row">
+          <div><div class="pk-prod-name">⭕ Obleas amaranto 30gr</div><div class="pk-prod-pcs">170 piezas</div></div>
+          <div class="pk-prod-prices"><div class="pk-prod-compra">Te cuesta $12.60 c/u</div><div class="pk-prod-vende">Vendes a $25+ c/u</div></div>
+        </div>
+      </div>
+      <div class="pk-incluye">
+        <div class="pk-inc-title">🎓 También incluye</div>
+        <ul class="pk-inc-list">
+          <li><div class="ic">✓</div><div>Curso: Emprende, Recupera y Gana</div></li>
+          <li><div class="ic">✓</div><div>Curso: Vende en Automático con Redes Sociales</div></li>
+          <li><div class="ic">✓</div><div>Curso: Genera ingresos recurrentes con red de puntos</div></li>
+          <li><div class="ic bono">🎁</div><div>Curso Libertad Financiera <span>BONO exclusivo</span></div></li>
+          <li><div class="ic bono">🎁</div><div>Sesión quincenal con experto <span>BONO exclusivo</span></div></li>
+          <li><div class="ic bono">🎁</div><div>5 casos de estudio + soporte personalizado <span>BONO exclusivo</span></div></li>
+          <li><div class="ic bono">🎁</div><div>+50 videos de promoción listos <span>BONO exclusivo</span></div></li>
+        </ul>
+      </div>
+      <div class="pk-cta">
+        <button class="btn-cta cta-teal">¡Quiero este paquete! →</button>
+        <div class="seguro-row">🔒 Pago 100% seguro · Envío incluido</div>
+      </div>
+    </div>
+
+    <!-- PLUS -->
+    <div class="paquete-card popular" onclick="elegirPaquete('plus')">
+      <div class="card-badge badge-popular">⭐ El más elegido</div>
+      <div class="pk-head with-badge">
+        <div class="pk-label">Maicitos</div>
+        <div class="pk-title">Business Pack Plus</div>
+        <div class="pk-precio-row"><div class="pk-precio">$5,997</div><div class="pk-precio-mxn">MXN · envío incluido</div></div>
+      </div>
+      <div class="roi-banner">
+        <div class="roi-top"><div class="roi-label">💰 Tu potencial de ganancia</div><div class="roi-pill">+104% ROI</div></div>
+        <div class="roi-numbers">
+          <div class="roi-num-box"><div class="roi-num-val">$5,997</div><div class="roi-num-lbl">Inviertes hoy</div></div>
+          <div class="roi-num-box"><div class="roi-num-val">$12,250</div><div class="roi-num-lbl">Vendes en total</div></div>
+        </div>
+        <div class="roi-ganancia"><div class="roi-gan-lbl">🎯 Ganancia neta estimada</div><div class="roi-gan-val">+$6,253</div></div>
+        <div style="margin-top:8px;display:flex;align-items:center;gap:6px;font-size:12px;color:var(--green-dk);font-weight:600"><span>⏱️</span><span>El 85% recupera esto en menos de 30 días</span></div>
+      </div>
+      <div class="pk-productos">
+        <div class="pk-prod-title">📦 Tu mercancía (más producto)</div>
+        <div class="pk-prod-row">
+          <div><div class="pk-prod-name">🌽 Maicitos 50gr</div><div class="pk-prod-pcs">400 piezas</div></div>
+          <div class="pk-prod-prices"><div class="pk-prod-compra">Te cuesta $9.50 c/u</div><div class="pk-prod-vende">Vendes a $20+ c/u</div></div>
+        </div>
+        <div class="pk-prod-row">
+          <div><div class="pk-prod-name">⭕ Obleas amaranto 30gr</div><div class="pk-prod-pcs">170 piezas</div></div>
+          <div class="pk-prod-prices"><div class="pk-prod-compra">Te cuesta $12.60 c/u</div><div class="pk-prod-vende">Vendes a $25+ c/u</div></div>
+        </div>
+        <div class="pk-prod-row" style="border:1.5px solid var(--teal);background:var(--teal-light)">
+          <div><div class="pk-prod-name" style="color:var(--teal-dk)">🛒 4 Exhibidores punto de venta</div><div class="pk-prod-pcs" style="color:var(--teal)">Para escalar tu distribución</div></div>
+          <div class="pk-prod-prices"><div class="pk-prod-vende">¡Incluidos!</div></div>
+        </div>
+      </div>
+      <div class="pk-incluye">
+        <div class="pk-inc-title">🎓 Todo del Basic + más</div>
+        <ul class="pk-inc-list">
+          <li><div class="ic">✓</div><div>Todo lo del Business Pack</div></li>
+          <li><div class="ic">✓</div><div>3 meses de seguimiento en la academia</div></li>
+          <li><div class="ic">✓</div><div>Acceso a la comunidad Maicitos</div></li>
+          <li><div class="ic">✓</div><div>Descuentos especiales en próximos pedidos</div></li>
+        </ul>
+      </div>
+      <div class="pk-cta">
+        <button class="btn-cta cta-teal">¡Quiero este paquete! →</button>
+        <div class="seguro-row">🔒 Pago 100% seguro · Envío incluido</div>
+      </div>
+    </div>
+
+    <!-- PREMIUM -->
+    <div class="paquete-card premium" onclick="elegirPaquete('premium')">
+      <div class="card-badge badge-premium">🔥 Máximo potencial</div>
+      <div class="pk-head with-badge">
+        <div class="pk-label">Maicitos</div>
+        <div class="pk-title">Business Pack Premium</div>
+        <div class="pk-precio-row"><div class="pk-precio dark">$6,997</div><div class="pk-precio-mxn">MXN · envío incluido</div></div>
+      </div>
+      <div class="roi-banner gold">
+        <div class="roi-top"><div class="roi-label gold">💰 Tu potencial de ganancia</div><div class="roi-pill gold">+132% ROI</div></div>
+        <div class="roi-numbers">
+          <div class="roi-num-box"><div class="roi-num-val">$6,997</div><div class="roi-num-lbl">Inviertes hoy</div></div>
+          <div class="roi-num-box"><div class="roi-num-val">$16,250</div><div class="roi-num-lbl">Vendes en total</div></div>
+        </div>
+        <div class="roi-ganancia gold"><div class="roi-gan-lbl gold">🎯 Ganancia neta estimada</div><div class="roi-gan-val gold">+$9,253</div></div>
+        <div style="margin-top:8px;display:flex;align-items:center;gap:6px;font-size:12px;color:var(--yellow-dk);font-weight:600"><span>⏱️</span><span>El 85% recupera esto en menos de 30 días</span></div>
+      </div>
+      <div class="pk-productos">
+        <div class="pk-prod-title">📦 Tu mercancía (máximo volumen)</div>
+        <div class="pk-prod-row">
+          <div><div class="pk-prod-name">🌽 Maicitos 50gr</div><div class="pk-prod-pcs">500 piezas — sabores más vendidos</div></div>
+          <div class="pk-prod-prices"><div class="pk-prod-compra">Te cuesta $8.75 c/u</div><div class="pk-prod-vende">Vendes a $20-25 c/u</div></div>
+        </div>
+        <div class="pk-prod-row">
+          <div><div class="pk-prod-name">⭕ Obleas amaranto 30gr</div><div class="pk-prod-pcs">250 piezas surtidas</div></div>
+          <div class="pk-prod-prices"><div class="pk-prod-compra">Te cuesta $10.49 c/u</div><div class="pk-prod-vende">Vendes a $25+ c/u</div></div>
+        </div>
+      </div>
+      <div class="pk-incluye">
+        <div class="pk-inc-title">🏆 Todo del Plus + exclusivos</div>
+        <ul class="pk-inc-list">
+          <li><div class="ic">✓</div><div>Todo lo del Business Pack Plus</div></li>
+          <li><div class="ic gold">✓</div><div>1 año de seguimiento en la academia</div></li>
+          <li><div class="ic gold">✓</div><div>Playera exclusiva de la marca</div></li>
+          <li><div class="ic gold">✓</div><div>5 flyers profesionales para promoción</div></li>
+          <li><div class="ic gold">✓</div><div>Bloc de notas de remisión</div></li>
+          <li><div class="ic gold">✓</div><div>Descuento preferencial en próximos pedidos <span>Aplican T&C</span></div></li>
+          <li><div class="ic gold">✓</div><div>Acceso anticipado a nuevos lanzamientos</div></li>
+          <li><div class="ic gold">✓</div><div>Lista de espera para Representante de Zona</div></li>
+        </ul>
+      </div>
+      <div class="pk-cta">
+        <button class="btn-cta cta-dark">¡Quiero el Premium! 🔥</button>
+        <div class="seguro-row">🔒 Pago 100% seguro · Envío incluido</div>
+      </div>
+    </div>
+    </div><!-- /paquetes-grid -->
+  </div>
+</div>
+
+<!-- ===== LOGIN ===== -->
+<div class="screen" id="s-login">
+  <div class="form-wrap">
+    <div class="card" style="margin-top:8px">
+      <div class="login-selected">
+        <div style="font-size:28px">📦</div>
+        <div>
+          <div class="login-sel-name" id="login-selected-name">Business Pack</div>
+          <div class="login-sel-price" id="login-selected-price">$4,997 MXN</div>
+        </div>
+      </div>
+      <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:16px;margin-bottom:4px">¡Casi listo!</div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:18px">Solo tus datos para continuar al pago</div>
+      <label class="field-label">Nombre completo</label>
+      <input class="field-input" id="login-name" type="text" placeholder="Tu nombre completo" autocomplete="name"/>
+      <label class="field-label">Correo electrónico</label>
+      <input class="field-input" id="login-email" type="email" placeholder="tu@correo.com" autocomplete="email" inputmode="email"/>
+      <button class="btn-main" onclick="irAPagar()">💳 Pagar con Mercado Pago</button>
+      <div class="pago-divider">o paga por transferencia</div>
+      <button class="btn-transferencia" onclick="toggleTransferencia()">🏦 Ver datos bancarios</button>
+      <div class="transferencia-box" id="transferencia-box">
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:13px;margin-bottom:12px;color:var(--text)">Datos para depósito o transferencia</div>
+        <div class="trans-row"><span class="trans-label">Destinatario</span><span class="trans-val">MEXAMAIZ</span></div>
+        <div class="trans-row"><span class="trans-label">Banco</span><span class="trans-val">Santander</span></div>
+        <div class="trans-row"><span class="trans-label">CLABE</span><span class="trans-val trans-clabe">014320655101378697</span></div>
+        <div class="trans-row"><span class="trans-label">Tarjeta</span><span class="trans-val trans-clabe">5579089005594729</span></div>
+        <div class="trans-row"><span class="trans-label">Rep. Legal</span><span class="trans-val" style="font-size:12px">Diana Laura Galván Ortega</span></div>
+        <div style="margin-top:12px;padding:10px 12px;background:var(--yellow-light);border-radius:10px;font-size:12px;color:var(--yellow-dk);font-weight:500">
+          💡 Una vez realizado tu pago, regresa aquí y toca <strong>"¿Ya pagaste?"</strong> para continuar con tu pedido.
+        </div>
+        <button class="btn-main" style="margin-top:12px" onclick="irATransferencia()">✅ Ya realicé mi transferencia →</button>
+      </div>
+      <button class="btn-ghost" onclick="goTo('s-landing')" style="width:100%;margin-top:10px;text-align:center">← Cambiar paquete</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== YA PAGUE ===== -->
+<div class="screen" id="s-yapague">
+  <div class="yapague-top">
+    <div style="font-size:40px;margin-bottom:8px">✅</div>
+    <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:white;margin-bottom:6px">¡Gracias por tu pago!</div>
+    <div style="font-size:14px;color:rgba(255,255,255,0.85)">Ingresa tu correo para continuar con tu pedido</div>
+  </div>
+  <div class="form-wrap" style="padding-top:20px">
+    <div class="card">
+      <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:16px;margin-bottom:4px">¿Con qué correo pagaste?</div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:18px">Lo usamos para vincular tu pago con tu pedido</div>
+      <label class="field-label">Correo electrónico</label>
+      <input class="field-input" id="yapague-email" type="email" placeholder="tu@correo.com" autocomplete="email" inputmode="email"/>
+      <label class="field-label">Tu nombre completo</label>
+      <input class="field-input" id="yapague-name" type="text" placeholder="Tu nombre completo" autocomplete="name"/>
+      <label class="field-label">Paquete que adquiriste</label>
+      <select class="field-input" id="yapague-paquete" style="cursor:pointer">
+        <option value="basic">Business Pack — $4,997</option>
+        <option value="plus">Business Pack Plus — $5,997</option>
+        <option value="premium">Business Pack Premium — $6,997</option>
+      </select>
+      <button class="btn-main" onclick="continuarPostPago()">Continuar con mi pedido →</button>
+      <button class="btn-ghost" onclick="goTo('s-landing')" style="width:100%;margin-top:10px;text-align:center">← Volver al inicio</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== POST PAGO (dirección) ===== -->
+<div class="screen" id="s-postpago">
+  <div class="postpago-top">
+    <div class="postpago-icon">✅</div>
+    <div class="postpago-title">¡Pago recibido!</div>
+    <div class="postpago-sub">Un paso más — dinos dónde<br>enviamos tu paquete</div>
+  </div>
+  <div class="form-wrap" style="padding-top:20px">
+    <div class="academia-notice">
+      <div class="academia-notice-title">📚 Tus accesos a la academia</div>
+      <div class="academia-notice-text">Recibirás un correo de confirmación de tu orden. Tus accesos serán enviados una vez que nuestro equipo <strong>valide tu pago</strong>. Para agilizarlo, contáctanos por WhatsApp y comparte tu comprobante. 🙏</div>
+    </div>
+    <div class="card">
+      <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:17px;margin-bottom:4px">Datos de envío</div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:18px">¿A dónde enviamos tu Business Pack?</div>
+      <label class="field-label">Calle y número</label>
+      <input class="field-input" id="addr-street" type="text" placeholder="Av. Principal 123" autocomplete="street-address"/>
+      <div class="row2">
+        <div><label class="field-label">Colonia</label><input class="field-input" id="addr-col" type="text" placeholder="Col. Centro" style="margin-bottom:0"/></div>
+        <div><label class="field-label">CP</label><input class="field-input" id="addr-cp" type="text" placeholder="44100" inputmode="numeric" style="margin-bottom:0"/></div>
+      </div>
+      <label class="field-label" style="margin-top:14px">Ciudad / Estado</label>
+      <input class="field-input" id="addr-city" type="text" placeholder="Guadalajara, Jalisco"/>
+      <label class="field-label">Teléfono</label>
+      <input class="field-input" id="addr-phone" type="tel" placeholder="+52 33 1234 5678" inputmode="tel" autocomplete="tel"/>
+      <button class="btn-main" onclick="confirmarEnvio()">Confirmar datos de envío ✓</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CONFIRMACIÓN FINAL ===== -->
+<div class="screen" id="s-confirm">
+  <div class="confirm-wrap">
+    <div class="confirm-card">
+      <div class="confirm-top">
+        <div class="confirm-badge" id="conf-num">PEDIDO #—</div>
+        <div class="confirm-title">¡Todo listo! 🎉</div>
+        <div class="confirm-sub">Tu pedido está registrado</div>
+        <div class="status-pill"><div class="pulse-dot"></div>En proceso</div>
+      </div>
+      <div class="confirm-body">
+        <div class="summary-box">
+          <div class="summary-label">Tu pedido</div>
+          <div class="summary-item"><span id="conf-paquete">Business Pack</span><span id="conf-precio" style="color:var(--teal);font-weight:700">$4,997</span></div>
+          <div class="summary-item"><span>📦 Envío</span><span style="color:var(--green);font-weight:700">Incluido</span></div>
+        </div>
+        <div class="addr-box">
+          <div class="addr-label">📍 Envío a</div>
+          <div class="addr-val" id="conf-addr"></div>
+        </div>
+        <div class="notif-box" id="notif-box"></div>
+        <div style="margin-top:16px;padding-top:16px;border-top:1.5px solid var(--border)">
+          <div style="font-size:13px;color:var(--muted);text-align:center;margin-bottom:12px;font-weight:500">¿Dudas o quieres enviar tu comprobante?</div>
+          <a id="btn-wa-soporte" href="#" target="_blank" class="btn-wa">💬 Contactar Soporte por WhatsApp</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay"><div class="spin"></div><div class="overlay-text" id="overlay-text">Procesando...</div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const EMAILJS_PK='gD1mYrwyt4Nj6wLf1',EMAILJS_SERVICE='service_95qsreq',EMAILJS_TPL='template_1528jwn';
+const SHEETS_URL='https://script.google.com/macros/s/AKfycbxXLaEahcWmI8hCHhK8GrPX3kCbqWdp-qhgLLNIBwtUlUkW0aJYnd539bqNFQzh1qCq1Q/exec';
+const WA_SOPORTE='523329566901';
+emailjs.init(EMAILJS_PK);
+
+const PAQUETES={
+  basic:{nombre:'Business Pack',precio:4997,etiqueta:'Maicitos Business Pack',productos:'• Maicitos 50gr × 300 pzs (vendes a $20-25 c/u)\n• Obleas amaranto 30gr × 170 pzs (vendes a $25+ c/u)'},
+  plus:{nombre:'Business Pack Plus',precio:5997,etiqueta:'Maicitos Business Pack Plus',productos:'• Maicitos 50gr × 400 pzs\n• Obleas amaranto 30gr × 170 pzs\n• 4 Exhibidores para puntos de venta\n• 3 meses academia incluidos'},
+  premium:{nombre:'Business Pack Premium',precio:6997,etiqueta:'Maicitos Business Pack Premium',productos:'• Maicitos 50gr × 500 pzs sabores más vendidos\n• Obleas amaranto 30gr × 250 pzs surtidas\n• Kit exclusivo: playera + flyers + bloc\n• 1 año academia + acceso comunidad'},
+};
+
+const state={paquete:null,user:{},addr:{},orderId:''};
+
+function elegirPaquete(key){
+  state.paquete=key;
+  const p=PAQUETES[key];
+  document.getElementById('login-selected-name').textContent=p.nombre;
+  document.getElementById('login-selected-price').textContent='$'+p.precio.toLocaleString('es-MX')+' MXN';
+  goTo('s-login');
+}
+
+function toggleTransferencia(){
+  const box=document.getElementById('transferencia-box');
+  box.classList.toggle('show');
+}
+
+function irATransferencia(){
+  if(!state.paquete){toast('Primero selecciona un paquete','err');return;}
+  const name=document.getElementById('login-name').value.trim();
+  const email=document.getElementById('login-email').value.trim();
+  if(!name||!email){toast('Completa nombre y correo','err');return;}
+  state.user={name,email};
+  goTo('s-postpago');
+}
+
+function continuarPostPago(){
+  const email=document.getElementById('yapague-email').value.trim();
+  const name=document.getElementById('yapague-name').value.trim();
+  const paquete=document.getElementById('yapague-paquete').value;
+  if(!email||!name){toast('Completa tu nombre y correo','err');return;}
+  state.user={name,email};
+  state.paquete=paquete;
+  goTo('s-postpago');
+}
+
+async function irAPagar(){
+  const name=document.getElementById('login-name').value.trim();
+  const email=document.getElementById('login-email').value.trim();
+  if(!name||!email){toast('Completa nombre y correo','err');return;}
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){toast('Correo no válido','err');return;}
+  state.user={name,email};
+  const p=PAQUETES[state.paquete];
+  const btn=document.querySelector('#s-login .btn-main');
+  btn.disabled=true;btn.textContent='⏳ Generando link de pago...';
+  try{
+    const res=await fetch('/.netlify/functions/crear-pago',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({total:p.precio,descripcion:p.etiqueta,pedido_id:'MC-'+Math.floor(Math.random()*90000+10000),email:state.user.email})});
+    const data=await res.json();
+    if(data.url){window.location.href=data.url;}
+    else throw new Error('Sin URL');
+  }catch(e){console.error('MP:',e);btn.disabled=false;btn.textContent='💳 Pagar con Mercado Pago';toast('Error al generar el pago — intenta de nuevo','err');}
+}
+
+async function confirmarEnvio(){
+  const street=document.getElementById('addr-street').value.trim();
+  const city=document.getElementById('addr-city').value.trim();
+  if(!street||!city){toast('Completa calle y ciudad','err');return;}
+  state.addr={street:document.getElementById('addr-street').value,col:document.getElementById('addr-col').value,cp:document.getElementById('addr-cp').value,city:document.getElementById('addr-city').value,phone:document.getElementById('addr-phone').value};
+  state.orderId='MC-'+Math.floor(Math.random()*90000+10000);
+  const p=PAQUETES[state.paquete];const addr=state.addr;
+  const addrStr=`${state.user.name}\n${addr.street}${addr.col?', '+addr.col:''}\n${addr.city}${addr.cp?' CP '+addr.cp:''}${addr.phone?'\nTel: '+addr.phone:''}`;
+  const now=new Date();
+  const fecha=now.toLocaleDateString('es-MX',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+now.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
+  document.getElementById('conf-num').textContent='PEDIDO '+state.orderId;
+  document.getElementById('conf-paquete').textContent=p.etiqueta;
+  document.getElementById('conf-precio').textContent='$'+p.precio.toLocaleString('es-MX');
+  document.getElementById('conf-addr').innerHTML=addrStr.replace(/\n/g,'<br>');
+  const waMsg=encodeURIComponent(`✅ *PEDIDO PAGADO — ${p.etiqueta}*\n*Pedido:* ${state.orderId}\n*Cliente:* ${state.user.name}\n*Email:* ${state.user.email}\n*Tel:* ${addr.phone||'—'}\n*Dirección:* ${addr.street}${addr.col?', '+addr.col:''}, ${addr.city}${addr.cp?' CP '+addr.cp:''}\n\nPor favor validen mi pago y envíen mis accesos a la academia. Adjunto comprobante. 🙏`);
+  document.getElementById('btn-wa-soporte').href=`https://wa.me/${WA_SOPORTE}?text=${waMsg}`;
+  goTo('s-confirm');
+  document.getElementById('notif-box').innerHTML=`<div class="notif-row" style="background:var(--bg);border:1.5px solid var(--border);color:var(--muted)">⏳ Registrando tu pedido...</div>`;
+  document.getElementById('overlay-text').textContent='Registrando tu pedido...';
+  document.getElementById('overlay').classList.add('show');
+  let emailOk=false;
+  try{await emailjs.send(EMAILJS_SERVICE,EMAILJS_TPL,{client_name:state.user.name,client_email:state.user.email,order_id:state.orderId,order_date:fecha,products:p.productos,total:'$'+p.precio.toLocaleString('es-MX')+' MXN',discount_line:'',address:addrStr});emailOk=true;}catch(e){console.error('Email:',e);}
+  try{await fetch(SHEETS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({fecha,pedido:state.orderId,nombre:state.user.name,email:state.user.email,telefono:addr.phone||'',direccion:`${addr.street}${addr.col?', '+addr.col:''}, ${addr.city}${addr.cp?' CP '+addr.cp:''}`,productos:p.productos,total:'$'+p.precio.toLocaleString('es-MX'),descuento:'Sin descuento',notas:p.etiqueta})});}catch(e){console.error('Sheet:',e);}
+  document.getElementById('overlay').classList.remove('show');
+  let nb='';
+  nb+=emailOk?`<div class="notif-row notif-ok">✅ Correo de confirmación enviado a ${state.user.email}</div>`:`<div class="notif-row notif-fail">⚠️ No se pudo enviar el correo — contáctanos por WhatsApp</div>`;
+  nb+=`<div class="notif-row notif-academia">📚 Tus accesos a la academia llegarán una vez que nuestro equipo valide tu pago. ¡Mándanos tu comprobante por WhatsApp para agilizarlo!</div>`;
+  document.getElementById('notif-box').innerHTML=nb;
+}
+
+function goTo(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
+function toast(msg,type=''){const t=document.getElementById('toast');t.textContent=msg;t.className='toast'+(type==='err'?' err':'');t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+</script>
+</body>
+</html>
