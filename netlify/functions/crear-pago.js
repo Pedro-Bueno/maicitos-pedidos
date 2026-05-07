@@ -18,10 +18,10 @@ exports.handler = async (event) => {
     payer: { email },
     external_reference: pedido_id,
     back_urls: {
-      success: 'https://maicitospedidos.netlify.app?pago=ok',
-      failure: 'https://maicitospedidos.netlify.app?pago=fail',
-      pending: 'https://maicitospedidos.netlify.app?pago=pendiente',
-    },
+  success: 'https://maicitospedidos.netlify.app?payment_status=approved',
+  failure: 'https://maicitospedidos.netlify.app?payment_status=rejected',
+  pending: 'https://maicitospedidos.netlify.app?payment_status=pending',
+},
     auto_return: 'approved',
     statement_descriptor: 'MAICITOS MX',
   };
